@@ -1,0 +1,151 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "TypeScript compiler configuration file",
+    "type": "object",
+    "definitions": {},
+    "properties": {
+      "compilerOptions": {
+        "type": "object",
+        "properties": {
+          "allowJs": { "type": "boolean" },
+          "allowSyntheticDefaultImports": { "type": "boolean" },
+          "allowUmdGlobalAccess": { "type": "boolean" },
+          "allowUnreachableCode": { "type": "boolean" },
+          "allowUnusedLabels": { "type": "boolean" },
+          "alwaysStrict": { "type": "boolean" },
+          "assumeChangesOnlyAffectDirectDependencies": { "type": "boolean" },
+          "baseUrl": { "type": "string" },
+          "charset": { "type": "string" },
+          "checkJs": { "type": "boolean" },
+          "composite": { "type": "boolean" },
+          "declaration": { "type": "boolean" },
+          "declarationDir": { "type": "string" },
+          "declarationMap": { "type": "boolean" },
+          "diagnostics": { "type": "boolean" },
+          "disableReferencedProjectLoad": { "type": "boolean" },
+          "disableSizeLimit": { "type": "boolean" },
+          "disableSolutionSearching": { "type": "boolean" },
+          "disableSourceOfProjectReferenceRedirect": { "type": "boolean" },
+          "downlevelIteration": { "type": "boolean" },
+          "emitBOM": { "type": "boolean" },
+          "emitDeclarationOnly": { "type": "boolean" },
+          "emitDecoratorMetadata": { "type": "boolean" },
+          "esModuleInterop": { "type": "boolean" },
+          "exactOptionalPropertyTypes": { "type": "boolean" },
+          "experimentalDecorators": { "type": "boolean" },
+          "forceConsistentCasingInFileNames": { "type": "boolean" },
+          "importHelpers": { "type": "boolean" },
+          "importsNotUsedAsValues": { "type": "string", "enum": ["remove", "preserve", "error"] },
+          "incremental": { "type": "boolean" },
+          "inlineSourceMap": { "type": "boolean" },
+          "inlineSources": { "type": "boolean" },
+          "isolatedModules": { "type": "boolean" },
+          "jsx": { "type": "string", "enum": ["preserve", "react-native", "react", "react-jsx", "react-jsxdev"] },
+          "jsxFactory": { "type": "string" },
+          "jsxFragmentFactory": { "type": "string" },
+          "jsxImportSource": { "type": "string" },
+          "keyofStringsOnly": { "type": "boolean" },
+          "lib": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "locale": { "type": "string" },
+          "mapRoot": { "type": "string" },
+          "maxNodeModuleJsDepth": { "type": "integer" },
+          "module": { "type": "string" },
+          "moduleResolution": { "type": "string" },
+          "newLine": { "type": "string", "enum": ["crlf", "lf"] },
+          "noEmit": { "type": "boolean" },
+          "noEmitHelpers": { "type": "boolean" },
+          "noEmitOnError": { "type": "boolean" },
+          "noErrorTruncation": { "type": "boolean" },
+          "noFallthroughCasesInSwitch": { "type": "boolean" },
+          "noImplicitAny": { "type": "boolean" },
+          "noImplicitOverride": { "type": "boolean" },
+          "noImplicitReturns": { "type": "boolean" },
+          "noImplicitThis": { "type": "boolean" },
+          "noStrictGenericChecks": { "type": "boolean" },
+          "noUnusedLocals": { "type": "boolean" },
+          "noUnusedParameters": { "type": "boolean" },
+          "outDir": { "type": "string" },
+          "outFile": { "type": "string" },
+          "paths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "plugins": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "path": { "type": "string" },
+                "options": { "type": "object" }
+              }
+            }
+          },
+          "preserveConstEnums": { "type": "boolean" },
+          "preserveSymlinks": { "type": "boolean" },
+          "preserveValueImports": { "type": "boolean" },
+          "project": { "type": "string" },
+          "reactNamespace": { "type": "string" },
+          "removeComments": { "type": "boolean" },
+          "resolveJsonModule": { "type": "boolean" },
+          "rootDir": { "type": "string" },
+          "rootDirs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "skipDefaultLibCheck": { "type": "boolean" },
+          "skipLibCheck": { "type": "boolean" },
+          "sourceMap": { "type": "boolean" },
+          "sourceRoot": { "type": "string" },
+          "strict": { "type": "boolean" },
+          "strictBindCallApply": { "type": "boolean" },
+          "strictFunctionTypes": { "type": "boolean" },
+          "strictNullChecks": { "type": "boolean" },
+          "strictPropertyInitialization": { "type": "boolean" },
+          "stripInternal": { "type": "boolean" },
+          "suppressExcessPropertyErrors": { "type": "boolean" },
+          "suppressImplicitAnyIndexErrors": { "type": "boolean" },
+          "target": { "type": "string" },
+          "traceResolution": { "type": "boolean" },
+          "tsBuildInfoFile": { "type": "string" },
+          "typeRoots": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "types": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "useDefineForClassFields": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      },
+      "exclude": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "include": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "extends": { "type": "string" },
+      "references": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "prepend": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "required": ["compilerOptions"]
+  }
+  

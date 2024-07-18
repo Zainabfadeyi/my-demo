@@ -1,0 +1,81 @@
+/* .a4Container {
+    width: 210mm;
+    margin: auto;
+    padding: 20mm 0;
+    background: white;
+  }
+  
+  .a4Pages {
+    width: 150mm;
+    height: 297mm;
+    margin: 10mm auto;
+    padding: 20mm;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    overflow: auto;
+    page-break-after: always;
+    
+  }
+  
+  .a4Content {
+    white-space: pre-wrap;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+   */
+
+   /* doc.module.css */
+/* body{
+  background-color:#C2C7CF ;
+} */
+
+.doc{
+  display: flex; 
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #E3F6F1;
+}
+.documentPreview {
+    margin-top: 20px;
+  }
+  
+  .pageContainer {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
+  
+  .pageContainer h3 {
+    text-align: center;
+  }
+  
+  .upload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+  }
+  
+  input[type="file"] {
+    margin: 20px 0;
+  }
+  
+  .react-pdf__Document {
+    width: 100%;
+    position: absolute;
+  }
+  
+  .react-pdf__Page {
+    margin: 10px 0;
+  }
+  
+  .error {
+    color: red;
+  }
+  
