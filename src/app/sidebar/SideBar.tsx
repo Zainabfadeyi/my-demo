@@ -1,72 +1,46 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+
+import React, { useEffect } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { SidebarData } from '../../app/sidebar/SideBarData';
 import SubMenu from './SubMenu';
-import { IconContext } from 'react-icons/lib';
+import styles from '../../styles/sidebar.module.css';
 
-const Nav = styled.div`
-  background: #1a1a1a;
-  height: 80px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
+interface SidebarProps {
+  isOpen: boolean;
+  toggleSidebar: () => void;
+}
 
-const NavIcon = styled(Link)`
-  margin-left: 2rem;
-  font-size: 20px;
-  height: 60px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        toggleSidebar();
+      }
+    };
 
-const SidebarNav = styled.nav<{ sidebar: boolean }>`
-  background: #1a1a1a;
-  width: 250px;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: ${({ sidebar }) => (sidebar ? '0' : '-100%')};
-  transition: 350ms;
-  z-index: 10;
-`;
+    window.addEventListener('resize', handleResize);
+    handleResize();
 
-const SidebarWrap = styled.div`
-  width: 100%;
-`;
-
-const Sidebar: React.FC = () => {
-  const [sidebar, setSidebar] = useState(false);
-
-  const showSidebar = () => setSidebar(!sidebar);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [toggleSidebar]);
 
   return (
     <>
-      <IconContext.Provider value={{ color: '#fff' }}>
-        <Nav style={{width:"0%"}}>
-          <NavIcon to='#'>
-            <FaIcons.FaBars onClick={showSidebar}  style={{color:"black"}}/>
-            
-          </NavIcon>
-          
-        </Nav>
-        <SidebarNav sidebar={sidebar}>
-          <SidebarWrap>
-            <NavIcon to='#'>
-              <AiIcons.AiOutlineClose onClick={showSidebar} />
-            </NavIcon>
-            {SidebarData.map((item, index) => (
-              <SubMenu item={item} key={index} />
-            ))}
-          </SidebarWrap>
-        </SidebarNav>
-      </IconContext.Provider>
+      <div className={styles.sidebarContainer}>
+       
+        <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+            <div className={styles.navIconClose}>
+              <AiIcons.AiOutlineClose onClick={toggleSidebar} style={{ color: "#000" }} />
+            </div>
+        
+          {SidebarData.map((item, index) => (
+            <SubMenu item={item} key={index} />
+          ))}
+        </div>
+      </div>
     </>
   );
 };

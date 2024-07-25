@@ -1,0 +1,25 @@
+[
+    {
+      "id": "1",
+      "documentNo": "001",
+      "dateCreated": "2024-07-19",
+      "subject": "Memo Subject 1",
+      "from": "Person A",
+      "recipient": "Person B",
+      "createdBy": "Admin",
+      "status": "Pending",
+      "approvalLink": "link1"
+    },
+    {
+      "id": "2",
+      "documentNo": "002",
+      "dateCreated": "2024-07-18",
+      "subject": "Memo Subject 2",
+      "from": "Person C",
+      "recipient": "Person D",
+      "createdBy": "Admin",
+      "status": "Approved",
+      "approvalLink": "link2"
+    }
+  ]
+  

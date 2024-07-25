@@ -3,18 +3,19 @@ import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import * as RiIcons from 'react-icons/ri';
-
+import * as GrIcons from "react-icons/gr";
+import * as MdIcons from 'react-icons/md';
 export interface SubNavItem {
   title: string;
   path: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
   cName?: string;
 }
 
 export interface SidebarItem {
   title: string;
   path: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
   iconClosed?: JSX.Element;
   iconOpened?: JSX.Element;
   subNav?: SubNavItem[];
@@ -22,82 +23,75 @@ export interface SidebarItem {
 
 export const SidebarData: SidebarItem[] = [
   {
-    title: 'Overview',
-    path: '/overview',
+    title: 'Dashboard',
+    path: '/dashbord',
     icon: <AiIcons.AiFillHome />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: 'Users',
-        path: '/overview/users',
-        icon: <IoIcons.IoIosPaper />
-      },
-      {
-        title: 'Revenue',
-        path: '/overview/revenue',
-        icon: <IoIcons.IoIosPaper />
-      }
-    ]
+  
   },
   {
-    title: 'Reports',
-    path: '/reports',
+    title: 'Memo Workflow',
+    path: '/form',
+    icon: <GrIcons.GrNotes/>
+  },
+  {
+    title: 'Inbox',
+    path: '/inbox',
+    icon: <FaIcons.FaInbox />
+  },
+  {
+    title: 'Montoring',
+    path:"#",
     icon: <IoIcons.IoIosPaper />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     subNav: [
       {
-        title: 'Reports',
-        path: '/reports/reports1',
-        icon: <IoIcons.IoIosPaper />,
+        title: 'My Active Task',
+        path: '/active-task',
         cName: 'sub-nav'
       },
       {
-        title: 'Reports 2',
-        path: '/reports/reports2',
-        icon: <IoIcons.IoIosPaper />,
+        title: 'My Request',
+        path: '/request',
         cName: 'sub-nav'
       },
       {
-        title: 'Reports 3',
-        path: '/reports/reports3',
-        icon: <IoIcons.IoIosPaper />
+        title: 'All Active Task',
+        path: '/all-active-task',
+      },
+      {
+        title: 'All Request',
+        path: '/all-request',
+        // icon: <IoIcons.IoIosPaper />
       }
     ]
   },
+  
   {
-    title: 'Products',
-    path: '/products',
-    icon: <FaIcons.FaCartPlus />
-  },
-  {
-    title: 'Team',
-    path: '/team',
-    icon: <IoIcons.IoMdPeople />
-  },
-  {
-    title: 'Messages',
-    path: '/messages',
+    title: 'Account',
+    path: '#',
     icon: <FaIcons.FaEnvelopeOpenText />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     subNav: [
       {
-        title: 'Message 1',
-        path: '/messages/message1',
+        title: 'Profile',
+        path: '/account/profile',
         icon: <IoIcons.IoIosPaper />
       },
       {
-        title: 'Message 2',
-        path: '/messages/message2',
+        title: 'Settings',
+        path: '/account/settings',
         icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Support',
+        path: '/support',
+        icon: <IoIcons.IoMdHelpCircle />
       }
     ]
   },
-  {
-    title: 'Support',
-    path: '/support',
-    icon: <IoIcons.IoMdHelpCircle />
-  }
+  
 ];

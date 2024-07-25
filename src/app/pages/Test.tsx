@@ -1,163 +1,118 @@
-// import React, { useState, ChangeEvent, FormEvent } from 'react';
-// // Import the main component
-// import { Viewer } from '@react-pdf-viewer/core'; // install this library
-// // Plugins
-// import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'; // install this library
-// // Import the styles
-// import '@react-pdf-viewer/core/lib/styles/index.css';
-// import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-// // Worker
-// import { Worker } from '@react-pdf-viewer/core'; // install this library
-
-// const Test: React.FC = () => {
-
-//   // Create new plugin instance
-//   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-  
-//   // for onchange event
-//   const [pdfFile, setPdfFile] = useState<string | ArrayBuffer | null>(null);
-//   const [pdfFileError, setPdfFileError] = useState<string>('');
-
-//   // for submit event
-//   const [viewPdf, setViewPdf] = useState<string | ArrayBuffer | null>(null);
-
-//   // accepted file types
-//   const fileType = ['application/pdf'];
-
-//   // onchange event
-//   const handlePdfFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-//     const selectedFile = e.target.files?.[0];
-//     if (selectedFile) {
-//       if (fileType.includes(selectedFile.type)) {
-//         const reader = new FileReader();
-//         reader.readAsDataURL(selectedFile);
-//         reader.onloadend = (event) => {
-//           setPdfFile(event.target?.result ?? null);
-//           setPdfFileError('');
-//         }
-//       } else {
-//         setPdfFile(null);
-//         setPdfFileError('Please select a valid PDF file');
-//       }
-//     } else {
-//       console.log('Please select your file');
-//     }
-//   }
-
-//   // form submit
-//   const handlePdfFileSubmit = (e: FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     if (pdfFile !== null) {
-//       setViewPdf(pdfFile);
-//     } else {
-//       setViewPdf(null);
-//     }
-//   }
-
-//   return (
-//     <div className='container'>
-//       <br />
-//       <form className='form-group' onSubmit={handlePdfFileSubmit}>
-//         <input type="file" className='form-control' required onChange={handlePdfFileChange} />
-//         {pdfFileError && <div className='error-msg'>{pdfFileError}</div>}
-//         <br />
-//         <button type="submit" className='btn btn-success btn-lg'>UPLOAD</button>
-//       </form>
-//       <br />
-//       <h4>View PDF</h4>
-//       <div className='pdf-container'>
-//         {/* show pdf conditionally (if we have one) */}
-//         {viewPdf && (
-//           <>
-//             <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
-//               <Viewer fileUrl={viewPdf} plugins={[defaultLayoutPluginInstance]} />
-//             </Worker>
-//           </>
-//         )}
-//         {/* if we don't have pdf or viewPdf state is null */}
-//         {!viewPdf && <>No PDF file selected</>}
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Test;
-import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { Viewer } from '@react-pdf-viewer/core';
-
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import { pdfjs } from 'react-pdf';
-
-// Set the global worker options for react-pdf
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`;
+import React, { useState, Fragment } from 'react';
+import data from '../../mock-data.json';
+import ReadOnlyRow from '../component/tables/ReadOnlyRow';
+import EditableRow from '../component/tables/EditableRow';
 
 const Test: React.FC = () => {
-  // Create new plugin instance
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const [memos, setMemos] = useState(data);
+  const [editFormData, setEditFormData] = useState({
+    documentNo: '',
+    dateCreated: '',
+    subject: '',
+    from: '',
+    recipient: '',
+    createdBy: '',
+    status: '',
+    approvalLink: '',
+  });
+  const [editMemoId, setEditMemoId] = useState<string | null>(null);
+  const [selectedMemos, setSelectedMemos] = useState<string[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
-  // for onchange event
-  const [pdfFile, setPdfFile] = useState<string | null>(null);
-  const [pdfFileError, setPdfFileError] = useState<string>('');
-
-  // for submit event
-  const [viewPdf, setViewPdf] = useState<string | null>(null);
-
-  // accepted file types
-  const fileType = ['application/pdf'];
-
-  // onchange event
-  const handlePdfFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      if (fileType.includes(selectedFile.type)) {
-        const reader = new FileReader();
-        reader.readAsDataURL(selectedFile);
-        reader.onloadend = (event) => {
-          if (event.target?.result && typeof event.target.result === 'string') {
-            setPdfFile(event.target.result);
-            setPdfFileError('');
-          }
-        };
-      } else {
-        setPdfFile(null);
-        setPdfFileError('Please select a valid PDF file');
-      }
-    } else {
-      console.log('Please select your file');
-    }
+  const handleEditFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setEditFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // form submit
-  const handlePdfFileSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (pdfFile !== null) {
-      setViewPdf(pdfFile);
+  const handleEditClick = (event: React.MouseEvent, memo: any) => {
+    event.preventDefault();
+    setEditMemoId(memo.id);
+    setEditFormData(memo);
+  };
+
+  const handleCancelClick = () => {
+    setEditMemoId(null);
+  };
+
+  const handleDeleteClick = (memoId: string) => {
+    setMemos((prev) => prev.filter((memo) => memo.id !== memoId));
+  };
+
+  const handleEditFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (editMemoId === null) {
+      return;
+    }
+    const editedMemo = { ...editFormData, id: editMemoId };
+    setMemos((prev) => prev.map((memo) => (memo.id === editMemoId ? editedMemo : memo)));
+    setEditMemoId(null);
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedMemos([]);
     } else {
-      setViewPdf(null);
+      const allMemoIds = memos.map((memo) => memo.id);
+      setSelectedMemos(allMemoIds);
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const handleSelectMemo = (id: string) => {
+    if (selectedMemos.includes(id)) {
+      setSelectedMemos(selectedMemos.filter((memoId) => memoId !== id));
+    } else {
+      setSelectedMemos([...selectedMemos, id]);
     }
   };
 
   return (
-    <div className='container'>
-      <br />
-      <form className='form-group' onSubmit={handlePdfFileSubmit}>
-        <input type="file" className='form-control' required onChange={handlePdfFileChange} />
-        {pdfFileError && <div className='error-msg'>{pdfFileError}</div>}
-        <br />
-        <button type="submit" className='btn btn-success btn-lg'>UPLOAD</button>
+    <div style={{ display: 'flex' }}>
+      <form onSubmit={handleEditFormSubmit}>
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+              </th>
+              <th>Document No</th>
+              <th>Date Created</th>
+              <th>Subject</th>
+              <th>From</th>
+              <th>Recipient</th>
+              <th>Created By</th>
+              <th>Status</th>
+              <th>Approval Link</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {memos.map((memo) => (
+              <Fragment key={memo.id}>
+                {editMemoId === memo.id ? (
+                  <EditableRow
+                    editFormData={editFormData}
+                    handleEditFormChange={handleEditFormChange}
+                    handleCancelClick={handleCancelClick}
+                  />
+                ) : (
+                  <ReadOnlyRow
+                    memo={memo}
+                    handleEditClick={handleEditClick}
+                    handleDeleteClick={handleDeleteClick}
+                    handleSelectMemo={handleSelectMemo}
+                    selected={selectedMemos.includes(memo.id)}
+                  />
+                )}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
       </form>
-      <br />
-      <h4>View PDF</h4>
-      <div className='pdf-container'>
-        {/* show pdf conditionally (if we have one) */}
-        {viewPdf && (
-          <Viewer fileUrl={viewPdf} plugins={[defaultLayoutPluginInstance]} />
-        )}
-        {/* if we don't have pdf or viewPdf state is null */}
-        {!viewPdf && <>No PDF file selected</>}
-      </div>
     </div>
   );
 };

@@ -178,8 +178,8 @@
 
 import React, { useState, useRef, useMemo } from 'react';
 import axios from '../../api/axios';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+// import ReactQuill from 'react-quill';
+// import 'react-quill/dist/quill.snow.css';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -204,7 +204,7 @@ const Doc: React.FC = () => {
   const [numPages, setNumPages] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const quillRef = useRef<ReactQuill>(null);
+  // const quillRef = useRef<ReactQuill>(null);
   
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -285,7 +285,8 @@ const Doc: React.FC = () => {
   const documentFile = useMemo(() => ({ data: memoizedFileContent as Uint8Array }), [memoizedFileContent]);
 
   return (
-    <div style={{ width: '100%', height: '100vh', display: 'flex' }}>
+    <>
+    <div style={{display: 'flex' }}>
       <div className={styles.doc}>
         <div className={styles.upload}>
           <UploadFiles
@@ -311,6 +312,7 @@ const Doc: React.FC = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

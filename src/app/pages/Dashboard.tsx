@@ -1,8 +1,10 @@
 import React from 'react'
+import Bar from '../component/chart/Bar'
 
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+    <div><Bar/>
+    my name is</div>
   )
 }
 

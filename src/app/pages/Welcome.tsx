@@ -2,7 +2,9 @@ import React from 'react'
 
 const Welcome = () => {
   return (
-    <div>welcome</div>
+    <div>
+    
+    </div>
   )
 }
 

@@ -1,0 +1,33 @@
+.cover{
+  display: flex;
+  background-color: #EDF3FD;
+  column-gap: 30px;
+}
+
+.navbar {
+    height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    
+  }
+  
+  .navIcon {
+    margin-left: 2rem;
+    font-size: 20px;
+    height: 30px;
+    display:
+     flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+  }
+  .memo{
+    align-content: center;
+    justify-content: center;
+    font-size: 25px;
+  }

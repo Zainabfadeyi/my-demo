@@ -1,8 +1,11 @@
 import React from 'react'
+import TanStackTable from '../component/tables/TanStackTable'
 
 const Inbox = () => {
   return (
-    <div>Inbox</div>
+    <div>
+      <TanStackTable/>
+    </div>
   )
 }
 

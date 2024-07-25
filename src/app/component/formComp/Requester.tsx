@@ -1,0 +1,80 @@
+
+import { Box } from '@mui/material';
+import styles from '../../../styles/memoform.module.css';
+import Doc from '../../pages/Doc';
+import { Field } from 'formik';
+import { CheckboxWithLabel, TextField } from 'formik-material-ui';
+import ReviewerDropdown from './ReviewerDropdown';
+import FirstApproval from './FirstApproval';
+import FinalApproval from './FinalApproval';
+import Templates from './Templates';
+
+
+const Requester :React.FC = () => (
+
+  <div className={styles.formGroup}>
+     <div style={{ display:"flex", alignItems:"center"}}> 
+      <div style={{color:"#1976D2", width:"15%"}}>Memo Document </div>
+      
+      <div className={styles.hr}></div>
+      </div>
+
+      <div className={styles.fieldCover}>
+      <div style={{ padding:"12px",margin:"-20px", fontWeight:"900", backgroundColor:"#F9FBFC"}}> 
+    Memo Details</div>
+
+    <div className={styles.fieldContent }>
+    <div className={styles.field}>
+    <div className={styles.formField}>
+    
+      <label htmlFor="subject" className={styles.label}>Subject</label>
+      <input id="subject" name="subject" type="text" className={styles.formInput} />
+    </div>
+    <div className={styles.formField}>
+      <label htmlFor="recipient" className={styles.label}>Recipient</label>
+      <input id="recipient" name="recipient" type="text" className={styles.formInput} />
+    </div>
+    </div>
+    <div className={styles.field}>
+    <div className={styles.formField}>
+      <label htmlFor="from" className={styles.label}>From</label>
+      <input id="from" name="from" type="text" className={styles.formInput} />
+    </div>
+    <div className={styles.formField}>
+      <label htmlFor="date" className={styles.label}>Date</label>
+      <input id="date" name="date" type="date" className={styles.formInput} />
+    </div>
+    </div>
+    <div className={styles.formField}>
+      <label htmlFor="description" className={styles.label}>Description</label>
+      <textarea id="description" name="description" rows={4} className={styles.input}></textarea>
+    </div>
+    </div>
+    </div>
+
+    <div className={styles.docsCover}>
+    <div style={{ padding:"12px",margin:"-20px", fontWeight:"900", backgroundColor:"#F9FBFC"}}> 
+    Attachment</div>
+      <div className={styles.docsContent}>
+    <div className={styles.formFieldAttachment}>
+      <label htmlFor="documentName" className={styles.label}>Document Name/Description</label>
+      <textarea id="documentName" name="documentName"  rows={6} className={styles.input} > </textarea>
+    </div>
+    <div style={{width:"100%"}}>
+      
+      <Doc/>
+    </div>
+    </div>
+    </div>
+    <div>
+    <ReviewerDropdown />
+    <FirstApproval />
+    <FinalApproval/>
+    <Templates/>
+    </div>
+  </div>
+);
+
+export default Requester;
+
+

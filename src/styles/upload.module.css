@@ -6,7 +6,8 @@
     border-radius: 5px;
     justify-content: center;
     align-items: center;
-    max-width: 800px;
+    margin: 0;
+    padding: 0;
     
 
 }
@@ -20,13 +21,12 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%; /* Adjust width as needed */
-    max-width: 800px; /* Optional max-width */
-    /* margin: 20px; */
+    width: 100%;
+    max-width: 800px;
     
     justify-content: center ;
     align-items: center;
-    /* height: 100vh; */
+   
     margin: 0;
 
 }
@@ -75,7 +75,7 @@
 }
 .uploadBox{
     width: 70%;
-    height:300px;
+    height:150px;
     display: flex;
     cursor: pointer;
     margin-top: 20px;
