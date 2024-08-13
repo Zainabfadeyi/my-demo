@@ -96,14 +96,13 @@
     "vite": "^5.2.12"
   },
   "browser": {
-  "http": "stream-http",
-  "https": "https-browserify",
-  "stream": "stream-browserify",
-  "buffer": "buffer",
-  "url": "url",
-  "util": "util",
-  "zlib": "browserify-zlib",
-  "assert": "assert"
-}
-
+    "http": "stream-http",
+    "https": "https-browserify",
+    "stream": "stream-browserify",
+    "buffer": "buffer",
+    "url": "url",
+    "util": "util",
+    "zlib": "browserify-zlib",
+    "assert": "assert"
+  }
 }

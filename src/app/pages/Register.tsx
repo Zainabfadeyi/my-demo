@@ -1,162 +1,347 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import styles from "../../styles/register.module.css"
-import { registerApi, AuthResponse } from '../../api/registerApi'
-import { verifyCodeApi,VerificationRequest } from '../../api/verifyCodeApi'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from '../../api/hook'
+// import React, { useEffect, useState } from 'react'
+// import { Link } from 'react-router-dom'
+// import styles from "../../styles/register.module.css"
+// import { registerApi, AuthResponse } from '../../api/registerApi'
+// import { verifyCodeApi,VerificationRequest } from '../../api/verifyCodeApi'
+// import { useNavigate } from 'react-router-dom'
+// import { useDispatch } from '../../api/hook'
 
-const Register:React.FC = () => {
+// const Register:React.FC = () => {
 
-    const [authResponse, setAuthResponse]= useState<AuthResponse|null>(null)
-    const [error, setError]= useState("");
-    const [mfaEnabled, setMfaEnabled] = useState(false)
-    const [validationCode, setValidtionCode ]=useState("")
-    const [isButtonDisabled, setIsButtonDisabled]= useState(true)
-    const [verificationRequest, setVerificationRequest]= useState<VerificationRequest|null>(null)
-    const[email, setEmail]=useState("")
-    const navigate= useNavigate();
+//     const [authResponse, setAuthResponse]= useState<AuthResponse|null>(null)
+//     const [error, setError]= useState("");
+//     const [mfaEnabled, setMfaEnabled] = useState(false)
+//     const [validationCode, setValidtionCode ]=useState("")
+//     const [isButtonDisabled, setIsButtonDisabled]= useState(true)
+//     const [verificationRequest, setVerificationRequest]= useState<VerificationRequest|null>(null)
+//     const[email, setEmail]=useState("")
+//     const navigate= useNavigate();
+//     const dispatch = useDispatch();
+//     const handleSubmit = async (event:React.FormEvent<HTMLFormElement>)=> {
+//         event.preventDefault();
+
+//         const formData = new FormData(event.currentTarget);
+
+//         const firstName = formData.get('firstname') as string;
+//         const lastName = formData.get('lastname') as string;
+//         const email = formData.get('email') as string;
+//         const password = formData.get('password') as string;
+//         setEmail(email)
+        
+//         try {
+//           const response = await registerApi(firstName, lastName, email, password, mfaEnabled);
+
+//           setAuthResponse(response);
+         
+          
+        
+//         } catch (error) {
+//           setError('Registration failed. Please try again.');
+//           console.error('Error during registration:', error);
+//         }
+    
+//     }
+
+//     const handleVerify= async()=>{
+      
+//       try{
+//         const verify=await verifyCodeApi(email,validationCode )
+//         setVerificationRequest(verify)
+//         navigate('/login')
+//       }catch(error){
+//         setError('Verification failed');
+//         console.error('error verifying code', error);
+//       }
+//     }
+      
+    
+//     useEffect(()=> {
+//         setIsButtonDisabled(validationCode.length !==6);
+//     },[validationCode])
+    
+//     useEffect(() => {
+//       localStorage.setItem('mfaEnabled', mfaEnabled.toString());
+//     }, [mfaEnabled]);
+//   return (
+//     <div>
+//         <section>
+//             <h1>
+//                 Register
+//             </h1>
+//             <form className={styles.formReg} onSubmit={handleSubmit}>
+//                 <label>First Name: </label>
+//                 <input 
+//                 type="text"
+//                 id='firstname'
+//                 autoComplete='off'
+//                 name="firstname"
+//                 required 
+                
+//                 />
+//                 <label>Last Name: </label>
+//                 <input 
+//                 type="text"
+//                 id='lastname'
+//                 autoComplete='off'
+//                 name="lastname"
+//                 required />
+//                 <label htmlFor="email">Email: </label>
+//                 <input
+//                     className="inputReg"
+//                     type="email"
+//                     id="email"
+//                     autoComplete="off"
+//                     name="email"
+//                     required 
+//                     />
+//                     <label htmlFor="passowrd">Password: </label>
+//                 <input
+//                     className="inputReg"
+//                     type="password"
+//                     id="password"
+//                     name="password"
+//                     required 
+//                     />
+//                     <button
+//                     type="submit"
+//                     >
+//                     Sign Up
+//                     </button>
+//             </form>
+//             <p>
+//                     Already registered?
+//                     <span >
+//                     <Link to="/login">Sign in</Link>
+//                     </span>
+//                 </p>
+//                 <div>
+//                 <div>
+//                     <input 
+//                     type="checkbox" 
+//                     checked={mfaEnabled}
+//                     onChange={()=> setMfaEnabled(
+//                       !mfaEnabled)}
+//                     id="2FA" />
+//                     <label>Enable 2FA (Two factor Authentication) </label>
+//                 </div>
+//        {authResponse && authResponse.mfaEnabled &&(
+//           <div>
+//             <h2>Set Up Two Factor Authentication</h2>
+//             <div className={styles.FormGroup}>
+//               <img src={authResponse.secretImageUri} alt="QR Code" />
+//             </div>
+//             <div>
+//             <label htmlFor=""> Enter 6 digits validation code generated by the app: </label>
+//             <input 
+//             type="text" 
+//             id='validationCode'
+//             name='validationCode'
+//             value={validationCode}
+//             onChange={(e) => setValidtionCode(e.target.value)}
+//             required/>
+//             <button
+//                 type='button'
+//                 className={styles.ButtonStyle}
+//                 disabled={isButtonDisabled}
+//                 onClick={handleVerify}>
+//             Verify code
+//         </button>
+//         </div>
+//           </div>
+//         )}
+        
+        
+//         </div>
+//         </section>
+        
+//     </div>
+//   )
+// }
+
+// export default Register;
+
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import styles from "../../styles/register.module.css";
+import { registerApi, AuthResponse } from '../../api/registerApi';
+import { verifyCodeApi, VerificationRequest } from '../../api/verifyCodeApi';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from '../../api/hook';
+import SignatureCanvas from 'react-signature-canvas';
+
+const Register: React.FC = () => {
+    const [authResponse, setAuthResponse] = useState<AuthResponse | null>(null);
+    const [error, setError] = useState("");
+    const [mfaEnabled, setMfaEnabled] = useState(false);
+    const [validationCode, setValidationCode] = useState("");
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [verificationRequest, setVerificationRequest] = useState<VerificationRequest | null>(null);
+    const [email, setEmail] = useState("");
+    const [signature, setSignature] = useState<string|null>(null); // Add state for the signature
+    const signatureRef = React.useRef<SignatureCanvas>(null); // Create a ref for the signature pad
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const handleSubmit = async (event:React.FormEvent<HTMLFormElement>)=> {
-        event.preventDefault();
 
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
         const firstName = formData.get('firstname') as string;
         const lastName = formData.get('lastname') as string;
         const email = formData.get('email') as string;
+        const userIdentifier = formData.get('userIdentifier') as string;
         const password = formData.get('password') as string;
-        setEmail(email)
         
+        setEmail(email);
+
         try {
-          const response = await registerApi(firstName, lastName, email, password, mfaEnabled);
-
-          setAuthResponse(response);
-         
-          
-        
+            const response = await registerApi(firstName, lastName, userIdentifier,email, password, mfaEnabled, signature); // Pass signature
+            setAuthResponse(response);
         } catch (error) {
-          setError('Registration failed. Please try again.');
-          console.error('Error during registration:', error);
+            setError('Registration failed. Please try again.');
+            console.error('Error during registration:', error);
         }
-    
     }
 
-    const handleVerify= async()=>{
-      
-      try{
-        const verify=await verifyCodeApi(email,validationCode )
-        setVerificationRequest(verify)
-        navigate('/login')
-      }catch(error){
-        setError('Verification failed');
-        console.error('error verifying code', error);
-      }
+    const handleVerify = async () => {
+        try {
+            const verify = await verifyCodeApi(email, validationCode);
+            setVerificationRequest(verify);
+            navigate('/login');
+        } catch (error) {
+            setError('Verification failed');
+            console.error('Error verifying code', error);
+        }
     }
-      
-    
-    useEffect(()=> {
-        setIsButtonDisabled(validationCode.length !==6);
-    },[validationCode])
-    
+
+    const clearSignature = () => {
+        signatureRef.current?.clear();
+        setSignature(null);
+    }
+
+    const saveSignature = () => {
+        if (signatureRef.current) {
+            const dataUrl = signatureRef.current.toDataURL();
+            setSignature(dataUrl);
+        }
+    }
+
     useEffect(() => {
-      localStorage.setItem('mfaEnabled', mfaEnabled.toString());
+        setIsButtonDisabled(validationCode.length !== 6);
+    }, [validationCode]);
+
+    useEffect(() => {
+        localStorage.setItem('mfaEnabled', mfaEnabled.toString());
     }, [mfaEnabled]);
-  return (
-    <div>
-        <section>
-            <h1>
-                Register
-            </h1>
-            <form className={styles.formReg} onSubmit={handleSubmit}>
-                <label>First Name: </label>
-                <input 
-                type="text"
-                id='firstname'
-                autoComplete='off'
-                name="firstname"
-                required 
-                
-                />
-                <label>Last Name: </label>
-                <input 
-                type="text"
-                id='lastname'
-                autoComplete='off'
-                name="lastname"
-                required />
-                <label htmlFor="email">Email: </label>
-                <input
-                    className="inputReg"
-                    type="email"
-                    id="email"
-                    autoComplete="off"
-                    name="email"
-                    required 
+
+    return (
+        <div>
+            <section>
+                <h1>Register</h1>
+                <form className={styles.formReg} onSubmit={handleSubmit}>
+                    <label>First Name: </label>
+                    <input
+                        type="text"
+                        id='firstname'
+                        autoComplete='off'
+                        name="firstname"
+                        required
                     />
-                    <label htmlFor="passowrd">Password: </label>
-                <input
-                    className="inputReg"
-                    type="password"
-                    id="password"
-                    name="password"
-                    required 
+                    <label>Last Name: </label>
+                    <input
+                        type="text"
+                        id='lastname'
+                        autoComplete='off'
+                        name="lastname"
+                        required />
+                    <label htmlFor="email">Email: </label>
+                    <input
+                        className="inputReg"
+                        type="email"
+                        id="email"
+                        autoComplete="off"
+                        name="email"
+                        required
                     />
-                    <button
-                    type="submit"
-                    >
-                    Sign Up
-                    </button>
-            </form>
-            <p>
+                    <label htmlFor="userIdentifier">UserName:  </label>
+                    <input
+                        className="inputReg"
+                        type="text"
+                        id="userIdentifier"
+                        autoComplete="off"
+                        name="userIdentifier"
+                        placeholder='e.g "zainab (lecturer)"'
+                        required
+                    />
+                    <label htmlFor="password">Password: </label>
+                    <input
+                        className="inputReg"
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                    />
+                    <button type="submit">Sign Up</button>
+                </form>
+                <p>
                     Already registered?
-                    <span >
-                    <Link to="/login">Sign in</Link>
+                    <span>
+                        <Link to="/login">Sign in</Link>
                     </span>
                 </p>
                 <div>
-                <div>
-                    <input 
-                    type="checkbox" 
-                    checked={mfaEnabled}
-                    onChange={()=> setMfaEnabled(
-                      !mfaEnabled)}
-                    id="2FA" />
-                    <label>Enable 2FA (Two factor Authentication) </label>
+                    <div>
+                        <input
+                            type="checkbox"
+                            checked={mfaEnabled}
+                            onChange={() => setMfaEnabled(!mfaEnabled)}
+                            id="2FA" />
+                        <label>Enable 2FA (Two factor Authentication) </label>
+                    </div>
+                    {authResponse && authResponse.mfaEnabled && (
+                        <div>
+                            <h2>Set Up Two Factor Authentication</h2>
+                            <div className={styles.FormGroup}>
+                                <img src={authResponse.secretImageUri} alt="QR Code" />
+                            </div>
+                            <div>
+                                <label htmlFor=""> Enter 6 digits validation code generated by the app: </label>
+                                <input
+                                    type="text"
+                                    id='validationCode'
+                                    name='validationCode'
+                                    value={validationCode}
+                                    onChange={(e) => setValidationCode(e.target.value)}
+                                    required />
+                                <button
+                                    type='button'
+                                    className={styles.ButtonStyle}
+                                    disabled={isButtonDisabled}
+                                    onClick={handleVerify}>
+                                    Verify code
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
-       {authResponse && authResponse.mfaEnabled &&(
-          <div>
-            <h2>Set Up Two Factor Authentication</h2>
-            <div className={styles.FormGroup}>
-              <img src={authResponse.secretImageUri} alt="QR Code" />
-            </div>
-            <div>
-            <label htmlFor=""> Enter 6 digits validation code generated by the app: </label>
-            <input 
-            type="text" 
-            id='validationCode'
-            name='validationCode'
-            value={validationCode}
-            onChange={(e) => setValidtionCode(e.target.value)}
-            required/>
-            <button
-                type='button'
-                className={styles.ButtonStyle}
-                disabled={isButtonDisabled}
-                onClick={handleVerify}>
-            Verify code
-        </button>
+
+                <div className={styles.signatureContainer}>
+                    <h2>Draw Your Signature</h2>
+                    <SignatureCanvas
+                        ref={signatureRef}
+                        backgroundColor='#c5c5c5'
+                        penColor='black'
+                       
+                        canvasProps={{ width: 500, height: "200px", className: 'sigCanvas' }}
+                    />
+                    <button type="button" onClick={saveSignature}>Save Signature</button>
+                    <button type="button" onClick={clearSignature}>Clear Signature</button>
+                </div>
+            </section>
         </div>
-          </div>
-        )}
-        
-        
-        </div>
-        </section>
-        
-    </div>
-  )
+    );
 }
 
 export default Register;
+
 

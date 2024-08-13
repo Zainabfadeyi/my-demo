@@ -1,4 +1,3 @@
-import exp from 'constants';
 import axios from './axios'
 import { User } from './slices/authSlice';
 export interface AuthResponse{
@@ -12,17 +11,21 @@ export interface AuthResponse{
 export const registerApi = async(
     firstName:string,
     lastName:string,
+    userIdentifier:string,
     email:string,
     password:string,
-    mfaEnabled:boolean
+    mfaEnabled:boolean,
+    signature:string|null
     
 ):Promise<AuthResponse>=>{
     const requestData={
         firstName,
         lastName,
+        userIdentifier,
         email,
         password,
-        mfaEnabled
+        mfaEnabled,
+        signature
     };
     try{
         console.log('this is the log', requestData)
