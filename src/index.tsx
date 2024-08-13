@@ -4,6 +4,11 @@ import './index.css';
 import App from './App';
 import { store } from './api/store';
 import { Provider } from 'react-redux';
+import { Buffer } from 'buffer';
+import process from 'process';
+
+window.Buffer = Buffer;
+window.process = process;
 
 // const root = ReactDOM.createRoot(
 //   document.getElementById('root') as HTMLElement

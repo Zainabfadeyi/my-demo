@@ -31,6 +31,7 @@ const DebouncedInput:React.FC<DebouncedInputProps> =  ({
       value={value}
       onChange={(e) => setValue(e.target.value)}
       className={styles.debouncedInput}
+      placeholder="search for document..."
     />
   );
 };

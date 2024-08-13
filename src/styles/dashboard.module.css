@@ -1,0 +1,116 @@
+.container{
+    width: 100%;
+    align-items: center;
+    padding: 20px;
+    
+}
+.chartContainer{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    column-gap: 15px;
+   
+}
+.barContainer{
+    width: 100%;
+    overflow: hidden;
+    background-color: #fff;
+}
+.pieContainer{
+    width: 100%;
+    overflow: hidden;
+    background-color: #fff;
+   
+ 
+}
+.segment{
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    margin-bottom: 10px;
+    
+  
+   
+}
+.tubeChartContainer{
+   width: 100%;
+    overflow: hidden;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    /* padding: 20px; */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+
+}
+
+.lineChartContainer{
+   width: 100%;
+    overflow: hidden;
+    background-color: #fff;
+
+   
+    
+}
+.memoWrap{
+    width: 100%;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 10px;
+}
+.request{
+    display: flex;
+    column-gap: 10px;
+    margin-bottom: 10px;
+ 
+
+    
+}
+.allRequest{
+    background-color: #fff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+
+   
+}
+.myRequest{
+    background-color: #fff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    
+}
+.number{
+    margin: 10px;
+    width: 100%;
+    margin: 10px;
+   
+}
+.name{
+    font-size: 25px;
+    font-weight: 600;
+    color: #62B5D5;
+    justify-content: center;
+    align-items: center;
+    
+}
+.Bar{
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+
+
+}
+.header{
+    justify-content: space-between;
+    align-items: center;
+    /* width: 100%; */
+    display: flex;
+
+}

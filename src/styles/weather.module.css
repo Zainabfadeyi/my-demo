@@ -1,0 +1,53 @@
+.app{
+    width: 100%;
+
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    
+
+}
+.appHeader{
+    width: 100%;
+    /* justify-content: space-between; */
+    align-items: center;
+    padding: 10px;
+    display: flex;
+}
+.title{
+    width: 100%;
+    font-size: 20px;
+    font-weight: 600;
+    padding-left: 5px;
+}
+.location{
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+}
+.condition{
+    color: red;
+    display: flex;
+
+}
+.description{
+    font-size: 15px;
+    font-weight: 300;
+    display: flex;
+}
+.temp{
+    color:#2379EA;
+    font-size: 30px;
+    font-weight: 700;
+    display: flex;
+    justify-content: flex-end;
+
+}
+.weatherData{
+    padding: 10px;
+}
+.mainWeather{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 130px;
+}

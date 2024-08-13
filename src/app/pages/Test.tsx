@@ -1,120 +1,127 @@
-import React, { useState, Fragment } from 'react';
-import data from '../../mock-data.json';
-import ReadOnlyRow from '../component/tables/ReadOnlyRow';
-import EditableRow from '../component/tables/EditableRow';
+import React, { useState } from 'react';
+import { Button, Stepper, Step, StepLabel, Grid, CircularProgress } from '@mui/material';
+import { Formik, Form, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
+import ReviewerFormPages from '../component/formComp/ReviewerFormPages';
+import Requester from '../component/formComp/Requester';
+import FirstApproval from '../component/formComp/FirstApproval';
+import FinalApproval from '../component/formComp/FinalApproval';
+import styles from '../../styles/memoform.module.css';
 
-const Test: React.FC = () => {
-  const [memos, setMemos] = useState(data);
-  const [editFormData, setEditFormData] = useState({
-    documentNo: '',
-    dateCreated: '',
-    subject: '',
-    from: '',
-    recipient: '',
-    createdBy: '',
-    status: '',
-    approvalLink: '',
-  });
-  const [editMemoId, setEditMemoId] = useState<string | null>(null);
-  const [selectedMemos, setSelectedMemos] = useState<string[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
+// Function to simulate a network request delay
+const sleep = (time: number) => new Promise((acc) => setTimeout(acc, time));
 
-  const handleEditFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const validationSchemas = [
+  Yup.object().shape({
+    subject: Yup.string().notRequired(),
+    recipient: Yup.string().notRequired(),
+  }),
+  Yup.object().shape({
+    reviewerName: Yup.string().notRequired(),
+    isReviewed: Yup.bool().oneOf([true], 'You must mark the memo as reviewed'),
+  }),
+  Yup.object().shape({
+    isFirstApproved: Yup.bool().oneOf([true], 'Must be first approved'),
+  }),
+  Yup.object().shape({
+    isFinalApproved: Yup.bool().oneOf([true], 'Must be final approved'),
+  }),
+];
 
-  const handleEditClick = (event: React.MouseEvent, memo: any) => {
-    event.preventDefault();
-    setEditMemoId(memo.id);
-    setEditFormData(memo);
-  };
+interface FormValues {
+  subject: string;
+  recipient: string;
+  reviewerName: string;
+  isReviewed: boolean;
+  firstApproverName: string;
+  isFirstApproved: boolean;
+  finalApproverName: string;
+  isFinalApproved: boolean;
+}
 
-  const handleCancelClick = () => {
-    setEditMemoId(null);
-  };
+const StepperForm: React.FC = () => {
+  const [step, setStep] = useState(0);
+  const [completed, setCompleted] = useState(false);
 
-  const handleDeleteClick = (memoId: string) => {
-    setMemos((prev) => prev.filter((memo) => memo.id !== memoId));
-  };
+  const steps = ['Requester', 'Reviewer', '1st Approval', 'Final Approval'];
 
-  const handleEditFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (editMemoId === null) {
-      return;
-    }
-    const editedMemo = { ...editFormData, id: editMemoId };
-    setMemos((prev) => prev.map((memo) => (memo.id === editMemoId ? editedMemo : memo)));
-    setEditMemoId(null);
-  };
+  const handleNext = () => setStep((prevStep) => prevStep + 1);
+  const handleBack = () => setStep((prevStep) => prevStep - 1);
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedMemos([]);
+  const isLastStep = () => step === steps.length - 1;
+
+  const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
+    if (isLastStep()) {
+      await sleep(3000);
+      console.log('Submitted values:', values);
+      setCompleted(true);
     } else {
-      const allMemoIds = memos.map((memo) => memo.id);
-      setSelectedMemos(allMemoIds);
-    }
-    setSelectAll(!selectAll);
-  };
-
-  const handleSelectMemo = (id: string) => {
-    if (selectedMemos.includes(id)) {
-      setSelectedMemos(selectedMemos.filter((memoId) => memoId !== id));
-    } else {
-      setSelectedMemos([...selectedMemos, id]);
+      handleNext();
+      setSubmitting(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <form onSubmit={handleEditFormSubmit}>
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th>Document No</th>
-              <th>Date Created</th>
-              <th>Subject</th>
-              <th>From</th>
-              <th>Recipient</th>
-              <th>Created By</th>
-              <th>Status</th>
-              <th>Approval Link</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {memos.map((memo) => (
-              <Fragment key={memo.id}>
-                {editMemoId === memo.id ? (
-                  <EditableRow
-                    editFormData={editFormData}
-                    handleEditFormChange={handleEditFormChange}
-                    handleCancelClick={handleCancelClick}
-                  />
-                ) : (
-                  <ReadOnlyRow
-                    memo={memo}
-                    handleEditClick={handleEditClick}
-                    handleDeleteClick={handleDeleteClick}
-                    handleSelectMemo={handleSelectMemo}
-                    selected={selectedMemos.includes(memo.id)}
-                  />
-                )}
-              </Fragment>
-            ))}
-          </tbody>
-        </table>
-      </form>
+    <div style={{width:"100%"}}>
+      <div className={styles.stepper}>
+                 <div style={{ padding: "12px", margin: "-20px", marginBottom: "25px", fontWeight: "900", backgroundColor: "#F9FBFC" }}>
+                 Status
+               </div>
+      <Stepper activeStep={step} alternativeLabel>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      </div>
+      {completed ? (
+        <div>Form Submitted Successfully!</div>
+      ) : (
+        <Formik<FormValues>
+          initialValues={{
+            subject: '',
+            recipient: '',
+            reviewerName: '',
+            isReviewed: false,
+            firstApproverName: '',
+            isFirstApproved: false,
+            finalApproverName: '',
+            isFinalApproved: false,
+          }}
+          validationSchema={validationSchemas[step]}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              {step === 0 && <Requester />}
+              {step === 1 && <ReviewerFormPages/>}
+              {step === 2 && <FirstApproval />}
+              {step === 3 && <FinalApproval />}
+              <Grid container spacing={2} justifyContent="flex-end">
+                <Grid item>
+                  <Button disabled={step === 0} onClick={handleBack}>
+                    Back
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    startIcon={isSubmitting ? <CircularProgress size="1rem" /> : null}
+                    disabled={isSubmitting}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                  >
+                    {isSubmitting ? 'Submitting' : isLastStep() ? 'Finish' : 'Next'}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+        </Formik>
+      )}
     </div>
   );
 };
 
-export default Test;
+export default StepperForm;

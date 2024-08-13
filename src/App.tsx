@@ -10,6 +10,11 @@ import MemoForm from './app/pages/MemoForm';
 import Workflow from './app/pages/Workflow';
 import Inbox from './app/pages/Inbox';
 import Dashboard from './app/pages/Dashboard';
+import MyTask from './app/pages/MyTask';
+import MyRequest from './app/pages/MyRequest';
+import ReviewerDropdown from './app/component/formComp/ReviewerDropdown';
+import ReviewerForm from './app/pages/ReviewerForm';
+import FillAndSignPDF from './app/component/signatures/FillAndSignPdf';
 
 function App() {
   return (
@@ -29,6 +34,10 @@ function App() {
       <Route path="/table" element={<Workflow/>}/>
       <Route path="/inbox" element={<Inbox/>}/>
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/active-task" element={<MyTask />} />
+      <Route path="/my-request" element={<MyRequest/>} />
+      <Route path="/reviewerform" element={<ReviewerForm/>} />
+      <Route path="/pdf" element={<FillAndSignPDF/>} />
     </Route>
    
     </Routes>

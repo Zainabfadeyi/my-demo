@@ -1,7 +1,12 @@
-.cover{
+.container{
   display: flex;
   background-color: #EDF3FD;
+  width: 100%;
+}
+.cover{
+  display: flex;
   column-gap: 30px;
+  width: 100%;
 }
 
 .navbar {
@@ -30,4 +35,14 @@
     align-content: center;
     justify-content: center;
     font-size: 25px;
+  }
+  .logout{
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+    margin: 20px;
+    padding-right: 10px;
+    cursor: pointer;
+    color: red;
   }

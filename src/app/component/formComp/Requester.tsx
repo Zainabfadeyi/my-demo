@@ -5,9 +5,11 @@ import Doc from '../../pages/Doc';
 import { Field } from 'formik';
 import { CheckboxWithLabel, TextField } from 'formik-material-ui';
 import ReviewerDropdown from './ReviewerDropdown';
-import FirstApproval from './FirstApproval';
-import FinalApproval from './FinalApproval';
+import FirstApproval from './FirstApprovalDropdown';
+import FinalApproval from './FinalApprovalDropdown';
 import Templates from './Templates';
+import FirstApprovalDropdown from './FirstApprovalDropdown';
+import FinalApprovalDropdown from './FinalApprovalDropdown';
 
 
 const Requester :React.FC = () => (
@@ -68,8 +70,8 @@ const Requester :React.FC = () => (
     </div>
     <div>
     <ReviewerDropdown />
-    <FirstApproval />
-    <FinalApproval/>
+    <FirstApprovalDropdown />
+    <FinalApprovalDropdown/>
     <Templates/>
     </div>
   </div>

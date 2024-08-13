@@ -4,7 +4,7 @@ import Templates from './Templates';
 import React, { useState } from 'react';
 
 
-const FinalApproval :React.FC = () => {
+const ReviewerFormPages :React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -137,16 +137,6 @@ const FinalApproval :React.FC = () => {
               <td className={styles.data}>Submitted</td>
               <td className={styles.data}>12/12/2021</td>
             </tr>
-            <tr>
-              <td className={styles.data}>user2</td>
-              <td className={styles.data}>Reviewed</td>
-              <td className={styles.data}>12/12/2021</td>
-            </tr>
-            <tr>
-              <td className={styles.data}>user3</td>
-              <td className={styles.data}>Approved</td>
-              <td className={styles.data}>12/12/2021</td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -156,4 +146,4 @@ const FinalApproval :React.FC = () => {
 };
 
 
-export default FinalApproval;
+export default ReviewerFormPages;

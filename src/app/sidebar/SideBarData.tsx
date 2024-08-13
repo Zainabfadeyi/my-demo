@@ -24,7 +24,7 @@ export interface SidebarItem {
 export const SidebarData: SidebarItem[] = [
   {
     title: 'Dashboard',
-    path: '/dashbord',
+    path: '/dashboard',
     icon: <AiIcons.AiFillHome />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
@@ -54,7 +54,7 @@ export const SidebarData: SidebarItem[] = [
       },
       {
         title: 'My Request',
-        path: '/request',
+        path: '/my-request',
         cName: 'sub-nav'
       },
       {

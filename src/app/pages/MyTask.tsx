@@ -7,27 +7,25 @@ import {
     useReactTable,
   } from "@tanstack/react-table";
   import { useState } from "react";
-  import { DOCUMENTS } from "../../../data";
-  import DebouncedInput from "./DebouncedInput";
+  import { DOCUMENTS } from "../../data";
+  import DebouncedInput from "../../app/component/tables/DebouncedInput";
   import { CiSearch } from "react-icons/ci";
-  import styles from "../../../styles/table.module.css";
-import ActionDropdown from "./ActionDropDown";
+  import styles from "../../styles/table.module.css";
+import { string } from "yup";
+import ActionDropdown from "../component/tables/ActionDropDown";
   
   // Define the Document type
   interface Document {
     documentNo: string;
     dateCreated: string;
     subject: string;
-    from: string;
-    recipient: string;
     createdBy: string;
     category:string;
-    status: string;
-    approvalLink: string;
+    taskStatus: string;
     actions: string;
   }
   
-  const TanStackTable = () => {
+  const MyTask = () => {
     const columnHelper = createColumnHelper<Document>();
   
     const columns = [
@@ -43,14 +41,6 @@ import ActionDropdown from "./ActionDropDown";
         header: "Subject",
         cell: (info) => <span>{info.getValue()}</span>,
       }),
-      columnHelper.accessor("from", {
-        header: "From",
-        cell: (info) => <span>{info.getValue()}</span>,
-      }),
-      columnHelper.accessor("recipient", {
-        header: "Recipient",
-        cell: (info) => <span>{info.getValue()}</span>,
-      }),
       columnHelper.accessor("createdBy", {
         header: "Created By",
         cell: (info) => <span>{info.getValue()}</span>,
@@ -59,14 +49,28 @@ import ActionDropdown from "./ActionDropDown";
         header: "Category",
         cell: (info) => <span>{info.getValue()}</span>,
       }),
-      columnHelper.accessor("status", {
-        header: "Status",
-        cell: (info) => <span>{info.getValue()}</span>,
+      
+
+      columnHelper.accessor("taskStatus", {
+        header: "status",
+        cell: (info) => {
+          const taskStatus = info.getValue();
+          return (
+            <span
+              className={styles.categoryCell}
+              style={{
+                backgroundColor: colors[taskStatus] || 'none', 
+                padding:"5px",
+                fontWeight:"600",
+                borderRadius:"10px"
+              }}
+            >
+              {taskStatus}
+            </span>
+          );
+        },
       }),
-      columnHelper.accessor("approvalLink", {
-        header: "Approval Link",
-        cell: (info) => <a href={info.getValue()}>Link</a>,
-      }),
+
       columnHelper.accessor("actions", {
         header: "Actions",
         cell: (info) => (
@@ -77,17 +81,22 @@ import ActionDropdown from "./ActionDropDown";
         ),
       }),
     ];
+    const [datas, setData] = useState([]);
+    const handleView = (document:Document) => {
+        console.log('View transaction:', document);
+      };
+      
+      const handleDelete = (document:Document) => {
+        console.log('View transaction:', document);
+      };
   
+    const colors: { [key: string]: string } = {
+         Inprogress:"#9EC8DE",
+         completed:"#7EBAA6",
+         New:"#9EC8DE"
+    };
     const [data] = useState(() => [...DOCUMENTS]);
     const [globalFilter, setGlobalFilter] = useState("");
-    const handleView = (document:Document) => {
-      console.log('View transaction:', document);
-    };
-    
-    const handleDelete = (document:Document) => {
-      console.log('View transaction:', document);
-    };
-
   
     const table = useReactTable<Document>({
       data,
@@ -104,10 +113,11 @@ import ActionDropdown from "./ActionDropDown";
       <div className={styles.tableContainer}>
         <div className={styles.tableHeader}>
           <div className={styles.searchContainer}>
-            <CiSearch />
+            <CiSearch style={{background:"#000"}} />
             <DebouncedInput
               value={globalFilter ?? ""}
               onChange={(value:any) => setGlobalFilter(String(value))}
+              
             />
           </div>
         </div>
@@ -207,6 +217,6 @@ import ActionDropdown from "./ActionDropDown";
     );
   };
   
-  export default TanStackTable;
+  export default MyTask;
   
   

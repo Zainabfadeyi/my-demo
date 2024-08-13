@@ -1,99 +1,57 @@
-import { ResponsiveBar } from '@nivo/bar'
-import React from 'react'
-import { DOCUMENTS as data} from "../../../data";
 
-const Bar:React.FC = () => {
-  return (
-    <div>
-        <ResponsiveBar
-        data={data}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy="country"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-      padding={0.3}
-      valueScale={{ type: "linear" }}
-      indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "nivo" }}
-      defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
-      borderColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
-      }}
-      axisTop={null}
-      axisRight={null}
-      axisBottom={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        // legend: isDashboard ? undefined : "country", // changed
-        legendPosition: "middle",
-        legendOffset: 32,
-      }}
-      axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        // legend: isDashboard ? undefined : "food", // changed
-        legendPosition: "middle",
-        legendOffset: -40,
-      }}
-      enableLabel={false}
-      labelSkipWidth={12}
-      labelSkipHeight={12}
-      labelTextColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
-      }}
-      legends={[
-        {
-          dataFrom: "keys",
-          anchor: "bottom-right",
-          direction: "column",
-          justify: false,
-          translateX: 120,
-          translateY: 0,
-          itemsSpacing: 2,
-          itemWidth: 100,
-          itemHeight: 20,
-          itemDirection: "left-to-right",
-          itemOpacity: 0.85,
-          symbolSize: 20,
-          effects: [
-            {
-              on: "hover",
-              style: {
-                itemOpacity: 1,
-              },
-            },
-          ],
-        },
-      ]}
-      role="application"
-      barAriaLabel={function (e) {
-        return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
-      }}
-    />
-    </div>
-  )
+import React from 'react';
+import { BarDatum, ResponsiveBar } from '@nivo/bar';
+import { DOCUMENTS } from "../../../data";
+import styles from  "../../../styles/dashboard.module.css"
+type DocumentStatus = "Pending" | "Approved" | "Rejected";
+
+
+interface BarChartData {
+  status: DocumentStatus;
+  count: number;
 }
 
-export default Bar
+const groupedData: { [key in DocumentStatus]?: number } = DOCUMENTS.reduce((acc, doc) => {
+  acc[doc.status as DocumentStatus] = (acc[doc.status as DocumentStatus] || 0) + 1;
+  return acc;
+}, {} as { [key in DocumentStatus]?: number });
+
+const barChartData: readonly BarDatum[] = Object.keys(groupedData).map((status) => ({
+  status: status as DocumentStatus,
+  count: groupedData[status as DocumentStatus] || 0,
+}));
+
+const Bar: React.FC = () => {
+  return (
+    <div className={styles.barContainer} >
+      <div style={{ height:"380px", transformOrigin: "center" }}>
+        <ResponsiveBar
+          data={barChartData}
+          keys={["count"]}
+          indexBy="status"
+          margin={{ top: 50, right: 100, bottom: 70, left: 90 }}
+          borderWidth={2}
+          padding={0.8}
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+          colors={() => "#2379EA"}
+          borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          borderRadius={15}
+          axisTop={null}
+          axisRight={null}
+          axisBottom={{}}
+          axisLeft={{}}
+          enableLabel={false}
+          labelSkipWidth={12}
+          labelSkipHeight={12}
+          labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          
+          role="application"
+          barAriaLabel={(e) => `${e.id}: ${e.formattedValue} in status: ${e.indexValue}`}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Bar;
