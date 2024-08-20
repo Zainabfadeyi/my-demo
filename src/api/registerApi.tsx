@@ -7,33 +7,55 @@ export interface AuthResponse{
     user:User,
 
 }
+// export interface UserDetailsResponse{
+//     id:Number,
+//     firstName:string,
+//     lastName:string,
+//     userIdentifier:string,
+//     email:string,
+//     role:string
+// }
 
-export const registerApi = async(
-    firstName:string,
-    lastName:string,
-    userIdentifier:string,
-    email:string,
-    password:string,
-    mfaEnabled:boolean,
-    signature:string|null
+// export const registerApi = async(
+//     firstName:string,
+//     lastName:string,
+//     userIdentifier:string,
+//     email:string,
+//     password:string,
+//     mfaEnabled:boolean,
+//     signature:File|null
     
-):Promise<AuthResponse>=>{
-    const requestData={
-        firstName,
-        lastName,
-        userIdentifier,
-        email,
-        password,
-        mfaEnabled,
-        signature
-    };
-    try{
-        console.log('this is the log', requestData)
-        const response = await axios.post<AuthResponse>('/api/v1/auth/register', requestData)
+// ):Promise<AuthResponse>=>{
+//     const requestData={
+//         firstName,
+//         lastName,
+//         userIdentifier,
+//         email,
+//         password,
+//         mfaEnabled,
+//         signature
+//     };
+//     try{
         
-        return response.data
+//         const response = await axios.post<AuthResponse>('/api/v1/auth/register', requestData)
+//         console.log('this is the log', requestData)
+//         console.log('this is the response', response)
+//         return response.data
         
-    }catch (error){
-        throw new Error(`Error during registration: ${error}`)
+        
+//     }catch (error){
+//         throw new Error(`Error during registration: ${error}`)
+//     }
+// }
+export const registerApi = async (formData: FormData): Promise<AuthResponse> => {
+    try {
+        const response = await axios.post<AuthResponse>('/api/v1/auth/register', formData, {
+            headers: {
+                'Content-Type': 'application/json' // Ensure the content type is set correctly
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(`Error during registration: ${error}`);
     }
-}
+};

@@ -177,31 +177,73 @@ const Register: React.FC = () => {
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [verificationRequest, setVerificationRequest] = useState<VerificationRequest | null>(null);
     const [email, setEmail] = useState("");
-    const [signature, setSignature] = useState<string|null>(null); // Add state for the signature
+    const [signature, setSignature] = useState<File|null>(null); // Add state for the signature
     const signatureRef = React.useRef<SignatureCanvas>(null); // Create a ref for the signature pad
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    //     event.preventDefault();
+    //     event.preventDefault();
+    // const formData = new FormData(event.currentTarget);
+
+    // // Append signature if it exists
+    // if (signature) {
+    //     formData.append('signature', signature, 'signature.png'); // Include file name
+    // }
+
+    // // Append other form data
+    // formData.append('firstName', formData.get('firstname') as string);
+    // formData.append('lastName', formData.get('lastname') as string);
+    // formData.append('userIdentifier', formData.get('userIdentifier') as string);
+    // formData.append('email', formData.get('email') as string);
+    // formData.append('password', formData.get('password') as string);
+    // formData.append('mfaEnabled', formData.get('mfaEnabled') as string);
+
+    //     setEmail(email);
+
+    //     try {
+    //         const response = await registerApi(formData); // Pass signature
+    //         setAuthResponse(response);
+    //     } catch (error) {
+    //         setError('Registration failed. Please try again.');
+    //         console.error('Error during registration:', error);
+    //     }
+    // }
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-
-        const firstName = formData.get('firstname') as string;
-        const lastName = formData.get('lastname') as string;
-        const email = formData.get('email') as string;
-        const userIdentifier = formData.get('userIdentifier') as string;
-        const password = formData.get('password') as string;
         
-        setEmail(email);
-
-        try {
-            const response = await registerApi(firstName, lastName, userIdentifier,email, password, mfaEnabled, signature); // Pass signature
-            setAuthResponse(response);
-        } catch (error) {
-            setError('Registration failed. Please try again.');
-            console.error('Error during registration:', error);
+        const formData = new FormData(event.currentTarget);
+    
+        // Convert signature file to Base64 string and append
+        if (signature) {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64String = (reader.result as string)?.split(',')[1] as string; // Get the Base64 part
+                formData.append('signature', base64String);
+    
+                try {
+                    const response = await registerApi(formData);
+                    setAuthResponse(response);
+                } catch (error) {
+                    setError('Registration failed. Please try again.');
+                    console.error('Error during registration:', error);
+                }
+            };
+            reader.readAsDataURL(signature); // Convert file to Base64
+        } else {
+            try {
+                const response = await registerApi(formData);
+                setAuthResponse(response);
+            } catch (error) {
+                setError('Registration failed. Please try again.');
+                console.error('Error during registration:', error);
+            }
         }
-    }
+    };
+    
+ 
+  
 
     const handleVerify = async () => {
         try {
@@ -219,12 +261,37 @@ const Register: React.FC = () => {
         setSignature(null);
     }
 
-    const saveSignature = () => {
-        if (signatureRef.current) {
-            const dataUrl = signatureRef.current.toDataURL();
-            setSignature(dataUrl);
-        }
+    // const saveSignature = () => {
+    //     if (signatureRef.current) {
+    //         const dataUrl = signatureRef.current.toDataURL();
+    //         setSignature(dataUrl);
+    //     }
+    // }
+  //   const saveSignature = async () => {
+  //     if (signatureRef.current) {
+  //         const dataUrl = signatureRef.current.toDataURL();
+  //         const blob = await fetch(dataUrl).then(res => res.blob());
+  //         const file = new File([blob], 'signature.png', { type: 'image/png' });
+  //         setSignature(file);
+  //     }
+  // }
+  const saveSignature = () => {
+    if (signatureRef.current) {
+        const dataUrl = signatureRef.current.toDataURL();
+        // Convert dataUrl to File object or Blob if needed
+        // For demonstration, we'll set it as a File
+              
+        fetch(dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], 'signature.png', { type: blob.type });
+                setSignature(file);
+            });
+            // console.log('this is the signature', signature)
+            console.log('this is the dataUrl', dataUrl)
     }
+};
+  
 
     useEffect(() => {
         setIsButtonDisabled(validationCode.length !== 6);

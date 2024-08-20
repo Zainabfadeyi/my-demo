@@ -5,9 +5,11 @@ export interface User {
    id:string;
    firstName:string;
    lastName:string;
+   userIdentifier:string
    email:string;
-   mfaEnabled:boolean;
-   token:string;
+   role:string;
+   signature:string;
+   token:string
 }
 
 interface AuthState {

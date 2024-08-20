@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styles from "../../styles/register.module.css";
-import { AuthResponse } from '../../api/registerApi';
+import { AuthResponse} from '../../api/registerApi';
 import { VerificationRequest, verifyCodeApi } from '../../api/verifyCodeApi';
-import { loginService } from '../../api/loginService';
+import { loginService, UserDetailsResponse } from '../../api/loginService';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../api/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux'; 
 import { RootState } from '../../api/store';
 import { setUser } from '../../api/slices/userSlice';
+import axios from '../../api/axios';
 
 const Login: React.FC = () => {
-  const{loginApi, userDetailsAPi}= loginService()
+  const{loginApi}= loginService()
 
   const [authResponse, setAuthResponse] = useState<AuthResponse | null>(null);
+  const[userResponse, setUserResponse]= useState<UserDetailsResponse | null>(null);
   const [validationCode, setValidtionCode] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [error, setError] = useState("");
@@ -38,11 +40,15 @@ const Login: React.FC = () => {
       console.log("this is auth response", response);
       setAuthResponse(response);
 
-      const token=response.token;
-      // Dispatch login action to store the state in Redux
-      dispatch(login({...response.user,token}));
-      const userDetails = await userDetailsAPi()
-      dispatch(setUser(userDetails))
+      const accessToken=response.token;
+     
+      const userDetailsResponse = await axios.get('/api/v1/user/details', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      
+      const userDetails = userDetailsResponse.data
+      dispatch(login({...userDetails,accessToken}));
+      dispatch(setUser(userDetails));
 
       if (response.mfaEnabled !== true) {
         navigate('/welcome');

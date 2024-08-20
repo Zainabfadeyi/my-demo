@@ -4,10 +4,11 @@ import { AuthResponse } from './registerApi'
 import { RootState } from './store';
 
 
-interface UserDetailsResponse{
+export  interface UserDetailsResponse{
     id:number;
     firstName: string;
     lastName:string;
+    userIdentifier:string,
     email:string;
     role:string;
 
@@ -36,22 +37,10 @@ export const loginService= ()=>{
 
     }
 
-    const userDetailsAPi= async(
-    ):Promise<UserDetailsResponse> =>{
-        
-        try{
-            
-            const response = await axios.get(`/api/v1/user/details`,{
-                headers:{Authorization: `Bearer ${token}`, }
-            });
-            return response.data
 
-        }catch(error){
-            throw new Error(`Error getting userdetails: ${error}`)
-        }
-    }
+    
 return{
     loginApi,
-    userDetailsAPi
+  
 }
 }

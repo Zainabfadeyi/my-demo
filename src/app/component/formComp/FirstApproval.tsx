@@ -64,8 +64,7 @@ const FirstApproval :React.FC = () => {
     <div className={styles.formField}>
       <label htmlFor="from" className={styles.label}>From</label>
       <input id="from" name="from" type="text" className={styles.formInput} />
-    </div>
-    <div className={styles.formField}>
+    </div><div className={styles.formField}>
       <label htmlFor="date" className={styles.label}>Date</label>
       <input id="date" name="date" type="date" className={styles.formInput} />
     </div>
@@ -74,6 +73,7 @@ const FirstApproval :React.FC = () => {
       <label htmlFor="description" className={styles.label}>Description</label>
       <textarea id="description" name="description" rows={4} className={styles.input}></textarea>
     </div>
+    
     </div>
     </div>
 

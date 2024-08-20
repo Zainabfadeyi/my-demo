@@ -17,6 +17,9 @@ declare module 'react-signature-canvas' {
     }
   
     export default class SignatureCanvas extends React.Component<SignatureCanvasProps> {
+      getTrimmedCanvas() {
+          throw new Error('Method not implemented.');
+      }
       clear(): void;
       isEmpty(): boolean;
       fromDataURL(dataURL: string): void;

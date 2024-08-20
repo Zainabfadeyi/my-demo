@@ -10,6 +10,9 @@ export interface SubNavItem {
   path: string;
   icon?: JSX.Element;
   cName?: string;
+  subNav?: SubNavItem[];
+  iconClosed?: JSX.Element;
+  iconOpened?: JSX.Element;
 }
 
 export interface SidebarItem {
@@ -26,8 +29,7 @@ export const SidebarData: SidebarItem[] = [
     title: 'Dashboard',
     path: '/dashboard',
     icon: <AiIcons.AiFillHome />,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    
   
   },
   {
@@ -64,33 +66,31 @@ export const SidebarData: SidebarItem[] = [
       {
         title: 'All Request',
         path: '/all-request',
-        // icon: <IoIcons.IoIosPaper />
+        
       }
     ]
   },
-  
   {
     title: 'Account',
-    path: '#',
+    path: '/Account',
     icon: <FaIcons.FaEnvelopeOpenText />,
+  },
+  
+  {
+    title: 'Settings',
+    path: '#',
+    icon: <IoIcons.IoIosPaper />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
+    subNav: [  
       {
-        title: 'Profile',
-        path: '/account/profile',
-        icon: <IoIcons.IoIosPaper />
+        title: 'Category Type',
+        path: '/category-type',
       },
       {
-        title: 'Settings',
-        path: '/account/settings',
-        icon: <IoIcons.IoIosPaper />
-      },
-      {
-        title: 'Support',
-        path: '/support',
-        icon: <IoIcons.IoMdHelpCircle />
-      }
+        title: 'Templates',
+        path: '/templates',
+      },  
     ]
   },
   

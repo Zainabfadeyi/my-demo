@@ -1,0 +1,56 @@
+.Container{
+    width: 100%;
+    
+
+}
+.form{
+    width: 100%;
+    padding: 10px;
+    
+
+}
+.formField{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+}
+.label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+.formInput{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid #c5c5c5;
+  }
+  .input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid #c5c5c5;
+  }
+  .template{
+    
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid  #c5c5c5;
+    margin: 10px;
+    background-color: #fff;
+
+  }
+  .file{
+    padding: 50px;
+    display: flex;
+    column-gap: 30px;
+    align-items: center;
+    
+
+  }

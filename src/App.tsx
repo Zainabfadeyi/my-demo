@@ -15,6 +15,8 @@ import MyRequest from './app/pages/MyRequest';
 import ReviewerDropdown from './app/component/formComp/ReviewerDropdown';
 import ReviewerForm from './app/pages/ReviewerForm';
 import FillAndSignPDF from './app/component/signatures/FillAndSignPdf';
+import Template from './app/pages/Template';
+import CategoryTable from './app/pages/CategoryTable';
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
       <Route path="/my-request" element={<MyRequest/>} />
       <Route path="/reviewerform" element={<ReviewerForm/>} />
       <Route path="/pdf" element={<FillAndSignPDF/>} />
+      <Route path="/templates" element={<Template/>} />
+      <Route path="/category-type" element={<CategoryTable/>}/>
     </Route>
    
     </Routes>
