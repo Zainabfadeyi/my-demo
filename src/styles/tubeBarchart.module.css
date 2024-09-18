@@ -1,4 +1,4 @@
-/* dashboard.module.css */
+/* dashboard.module.css
 /* .progressVerticaL {
     display: flex;
     justify-content: space-around;
@@ -20,29 +20,37 @@
   }
   
   .progressBar.employment-agreement {
-    background-color: blue;
+    background-color:#2379EA;
   }
   
   .progressBar.new-employer-document {
-    background-color: blue;
+    background-color: #2379EA;
   }
   
   .progressBar.departmental-benefits {
-    background-color: blue;
+    background-color:#2379EA ;
   }
   
   .progressBar.offer-letter {
-    background-color: blue;
+    background-color: #2379EA;
   }
   
-  .progressBar.faculty-benefit {
-    background-color: blue;
+  .progressBar.faculty-benefits {
+    background-color: #2379EA;
     
   }
   
-  .progressBar.student-benefit {
-    background-color: blue;
+  .progressBar.students-benefits {
+    background-color: #2379EA;
   }
+  .progressBar.staff-benefits {
+    background-color: #2379EA;
+  }
+  .progressBar.departmental-benefits {
+    background-color: #2379EA;
+  }
+
+
   .progress-bar {
     width: 100% !important; /* Fill the width of the container */
     transition: height 0.5s ease; /* Smooth transition for height change */
@@ -94,5 +102,5 @@
     height: var(--bs-progress-height, 1rem) !important;
     /* writing-mode: vertical-lr; */
    
-  }
+  } 
   

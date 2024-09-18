@@ -1,102 +1,123 @@
-
-
-
-// import React, { useState, useRef, useMemo } from 'react';
+// import React, { useState, useMemo } from 'react';
 // import axios from '../../api/axios';
-// // import ReactQuill from 'react-quill';
-// // import 'react-quill/dist/quill.snow.css';
-// import { Document, Page, pdfjs } from 'react-pdf';
-// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-// import 'react-pdf/dist/esm/Page/TextLayer.css';
-// import mammoth from 'mammoth';
 // import styles from '../../styles/doc.module.css';
-// import UploadFiles from '../component/UploadFiles'; // Adjust the path according to your project structure
+// import UploadFiles from '../component/UploadFiles';
 // import FilePreviewModal from '../component/FilePreviewModal';
+// import { Document, Page, pdfjs } from 'react-pdf';
+// import mammoth from 'mammoth';
 
-
+// interface DocProps {
+//   onFileUpload: (file: { fileName: string; fileContent: Uint8Array | string | null }) => void;
+// }
 // pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.js`;
 
-// const Doc: React.FC = () => {
+// const Doc: React.FC <DocProps>= ({onFileUpload}) => {
 //   const [formInputs, setFormInputs] = useState<Map<string, any>>(new Map());
 //   const [fileType, setFileType] = useState<string>('');
 //   const [fileContent, setFileContent] = useState<Uint8Array | string | null>(null);
-//   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+//   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 //   const [error, setError] = useState<string>('');
-//   const [uploadProgress, setUploadProgress] = useState<number>(0);
-//   const [uploadedFileName, setUploadedFileName] = useState<string>('');
-//   const [uploadStatus, setUploadStatus] = useState<string>('');
-//   const [uploadSize, setUploadSize] = useState<string>('');
+//   const [uploadProgress, setUploadProgress] = useState<number[]>([]);
+//   const [uploadedFileNames, setUploadedFileNames] = useState<string[]>([]);
+//   const [uploadStatuses, setUploadStatuses] = useState<string[]>([]);
+//   const [uploadSizes, setUploadSizes] = useState<string[]>([]);
 //   const [numPages, setNumPages] = useState<number>(0);
 //   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-//   // const quillRef = useRef<ReactQuill>(null);
-  
+//   const [fileName, setFileName] = useState<string>('');
 
 //   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 //     const { name, value } = e.target;
 //     setFormInputs(prevState => new Map(prevState).set(name, value));
 //   };
 
+//   // const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+//   //   const files = event.target.files;
+//   //   if (files) {
+//   //     const fileArray = Array.from(files);
+//   //     setSelectedFiles(fileArray);
+//   //     setUploadProgress(new Array(fileArray.length).fill(0));
+//   //     setUploadedFileNames(fileArray.map(file => file.name));
+//   //     setUploadStatuses(new Array(fileArray.length).fill(''));
+//   //     setUploadSizes(fileArray.map(file => `${(file.size / (1024 * 1024)).toFixed(2)} MB`));
+
+//   //     // Process each file (you can implement file type checking logic here as well)
+//   //     // ...
+//   //   }
+//   // };
 //   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = event.target.files?.[0];
-//     if (file) {
-//       setSelectedFile(file);
-//       setFileType(file.type);
+//     const files = event.target.files;
+//     if (files) {
+//       const fileArray = Array.from(files);
+//       setSelectedFiles(fileArray);
+//       setUploadProgress(new Array(fileArray.length).fill(0));
+//       setUploadedFileNames(fileArray.map(file => file.name));
+//       setUploadStatuses(new Array(fileArray.length).fill(''));
+//       setUploadSizes(fileArray.map(file => `${(file.size / (1024 * 1024)).toFixed(2)} MB`));
+     
+//       setFileName(fileArray[0].name);
+
 //       const reader = new FileReader();
-//       reader.onload = async (e: any) => {
-//         try {
-//           const arrayBuffer = e.target.result as ArrayBuffer;
-//           if (file.type === 'application/pdf') {
-//             const uint8Array = new Uint8Array(arrayBuffer);
-//             setFileContent(uint8Array);
-//           } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+//       reader.onload = async (e) => {
+//         const content = e.target?.result;
+//         if (content) {
+//           const fileExtension = fileArray[0].name.split('.').pop()?.toLowerCase();
+//           if (fileExtension === 'pdf') {
+//             setFileContent(new Uint8Array(e.target?.result as ArrayBuffer));
+//           } else if (fileExtension === 'docx') {
+//             const arrayBuffer = e.target?.result as ArrayBuffer;
 //             const result = await mammoth.convertToHtml({ arrayBuffer });
 //             setFileContent(result.value);
-//           } else {
-//             setError('Unsupported file type. Please upload a DOCX or PDF file.');
 //           }
-//           setError('');
-//         } catch (err) {
-//           setError('Failed to read the document. It may be corrupted.');
-//           console.error('Error reading document:', err);
+//           onFileUpload({ fileName: fileArray[0].name, fileContent });
 //         }
 //       };
-//       reader.onerror = () => {
-//         setError('Error reading file.');
-//       };
-//       reader.readAsArrayBuffer(file);
+//       reader.readAsArrayBuffer(fileArray[0]);
 //     }
 //   };
 
 //   const handleUploadSubmit = async () => {
-//     if (selectedFile) {
-//       const formData = new FormData();
-//       formData.append('file', selectedFile);
-//       formData.append('subject', formInputs.get('subject') || '');
-//       formData.append('recipient', formInputs.get('recipient') || '');
+//     if (selectedFiles.length > 0) {
+//       const promises = selectedFiles.map(async (file, index) => {
+//         const formData = new FormData();
+//         formData.append('file', file);
 
-//       try {
-//         const response = await axios.post('http://localhost:8080/api/v1/memo/upload', formData, {
-//           headers: {
-//             'Content-Type': 'multipart/form-data',
-//           },
-//           onUploadProgress: (progressEvent: any) => {
-//             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-//             setUploadProgress(percentCompleted);
-//           },
-//         });
+//         try {
+//           const response = await axios.post('/api/v1/memo/upload', formData, {
+//             headers: {
+//               'Content-Type': 'multipart/form-data',
+//             },
+//             onUploadProgress: (progressEvent: any) => {
+//               const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+//               setUploadProgress(prev => {
+//                 const newProgress = [...prev];
+//                 newProgress[index] = percentCompleted;
+//                 return newProgress;
+//               });
+//             },
+//           });
 
-//         const { memo } = response.data;
-//         console.log(response);
+//           const { id, fileName, fileSize, status } = response.data;
+//           setUploadStatuses(prev => {
+//             const newStatuses = [...prev];
+//             newStatuses[index] = `File uploaded successfully: ${status}`;
+//             return newStatuses;
+//           });
 
-//         setUploadStatus(`File uploaded successfully: ${response.data.message}`);
-//         setUploadSize(memo.fileSize);
-//         console.log("this is the upload file", uploadSize);
-//         setUploadedFileName(selectedFile.name);
-//       } catch (error) {
-//         console.error('Error uploading file:', error);
-//         setUploadStatus('Upload failed.');
-//       }
+//           console.log("This is the file ID:", id);
+//           console.log("This is the file size:", fileSize);
+//           console.log("This is the file name:", fileName);
+//         } catch (error) {
+//           console.error('Error uploading file:', error);
+//           setUploadStatuses(prev => {
+//             const newStatuses = [...prev];
+//             newStatuses[index] = 'Upload failed.';
+//             return newStatuses;
+//           });
+//         }
+//       });
+
+//       await Promise.all(promises);
+//       setTimeout(() => setUploadProgress(new Array(selectedFiles.length).fill(0)), 2000);
 //     } else {
 //       setError('No file selected.');
 //     }
@@ -111,37 +132,70 @@
 
 //   return (
 //     <>
-//     <div style={{display: 'flex' }}>
-//       <div className={styles.doc}>
-//         <div className={styles.upload}>
-//           <UploadFiles
-//             onChange={handleFileUpload}
-//             uploadProgress={uploadProgress}
-//             uploadedFileName={uploadedFileName}
-//             uploadSize={uploadSize}
-//             uploadStatus={uploadStatus}
-//             onSubmit={handleUploadSubmit}
-//             onFileNameClick={() => setIsModalOpen(true)}
-//           />
+//       <div style={{ display: 'flex' }}>
+//         <div className={styles.doc}>
+//           <div className={styles.upload}>
+//             <UploadFiles
+//               onChange={handleFileUpload}
+//               uploadProgress={uploadProgress}
+//               uploadedFileNames={uploadedFileNames}
+//               uploadStatuses={uploadStatuses}
+//               uploadSizes={uploadSizes}
+//               onSubmit={handleUploadSubmit}
+//               onFileNameClick={(index: number) => {
+//                 const file = selectedFiles[index];
+//                 const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+//                 const reader = new FileReader();
+//                 reader.onload = async (e) => {
+//                   const content = e.target?.result;
+//                   if (content) {
+//                     if (fileExtension === 'pdf') {
+//                       setFileContent(new Uint8Array(e.target?.result as ArrayBuffer));
+//                     } else if (fileExtension === 'docx') {
+//                       const arrayBuffer = e.target?.result as ArrayBuffer;
+//                       const result = await mammoth.convertToHtml({ arrayBuffer });
+//                       setFileContent(result.value);
+//                     }
+//                     setFileType(fileExtension || '');
+//                     setIsModalOpen(true);
+//                   }
+//                 };
+
+//                 if (file) {
+//                   if (fileExtension === 'pdf' || fileExtension === 'docx') {
+//                     reader.readAsArrayBuffer(file);
+//                   } else {
+//                     console.error('Unsupported file type:', fileExtension);
+//                   }
+//                 }
+//               }}
+//             />
+//             {error && <p className={styles.error}>{error}</p>}
+//           </div>
 //         </div>
-//         {error && <div style={{ color: 'red' }}>{error}</div>}
-//         {fileContent && (
-//           <FilePreviewModal
-//             isOpen={isModalOpen}
-//             onRequestClose={() => setIsModalOpen(false)}
-//             fileType={fileType}
-//             fileContent={memoizedFileContent as Uint8Array}
-//             numPages={numPages}
-//             onDocumentLoadSuccess={onDocumentLoadSuccess}
-//           />
-//         )}
 //       </div>
-//     </div>
+//       <FilePreviewModal 
+//       isOpen={isModalOpen} 
+//       fileType={fileType} 
+//       content={fileContent} 
+//       numPages={numPages}
+//       onDocumentLoadSuccess={onDocumentLoadSuccess}
+//       documentFile={documentFile}
+//       onClose={() => setIsModalOpen(false)}>
+//         {fileType === 'pdf' && <Document file={documentFile} onLoadSuccess={onDocumentLoadSuccess}>
+//           {Array.from(new Array(numPages), (el, index) => (
+//             <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+//           ))}
+//         </Document>}
+//         {fileType === 'docx' && <div dangerouslySetInnerHTML={{ __html: fileContent as string }} />}
+//       </FilePreviewModal>
 //     </>
 //   );
 // };
 
 // export default Doc;
+
 
 import React, { useState, useMemo } from 'react';
 import axios from '../../api/axios';
@@ -151,110 +205,94 @@ import FilePreviewModal from '../component/FilePreviewModal';
 import { Document, Page, pdfjs } from 'react-pdf';
 import mammoth from 'mammoth';
 
+interface DocProps {
+  onFileUpload: (file: { fileName: string; fileContent: Uint8Array | string | null }) => void;
+}
+
 pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.js`;
 
-const Doc: React.FC = () => {
+const Doc: React.FC<DocProps> = ({ onFileUpload }) => {
   const [formInputs, setFormInputs] = useState<Map<string, any>>(new Map());
   const [fileType, setFileType] = useState<string>('');
   const [fileContent, setFileContent] = useState<Uint8Array | string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [error, setError] = useState<string>('');
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [uploadedFileName, setUploadedFileName] = useState<string>('');
-  const [uploadStatus, setUploadStatus] = useState<string>('');
-  const [uploadSize, setUploadSize] = useState<string>('');
+  const [uploadProgress, setUploadProgress] = useState<number[]>([]);
+  const [uploadedFileNames, setUploadedFileNames] = useState<string[]>([]);
+  const [uploadStatuses, setUploadStatuses] = useState<string[]>([]);
+  const [uploadSizes, setUploadSizes] = useState<string[]>([]);
   const [numPages, setNumPages] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [fileName, setFileName] = useState<string>('');
+  const [isUploading, setIsUploading] = useState<boolean>(false); // Track if uploading
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormInputs(prevState => new Map(prevState).set(name, value));
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setFileType(file.type);
-      const reader = new FileReader();
-      reader.onload = async (e: any) => {
-        try {
-          const arrayBuffer = e.target.result as ArrayBuffer;
-          if (file.type === 'application/pdf') {
-            const uint8Array = new Uint8Array(arrayBuffer);
-            setFileContent(uint8Array);
-          } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            const result = await mammoth.convertToHtml({ arrayBuffer });
-            setFileContent(result.value);
-          } else {
-            setError('Unsupported file type. Please upload a DOCX or PDF file.');
-          }
-          setError('');
-        } catch (err) {
-          setError('Failed to read the document. It may be corrupted.');
-          console.error('Error reading document:', err);
-        }
-      };
-      reader.onerror = () => {
-        setError('Error reading file.');
-      };
-      reader.readAsArrayBuffer(file);
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setSelectedFiles(fileArray);
+
+      setFileName(fileArray[0].name);
     }
   };
 
-//   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = event.target.files?.[0];
-//     if (file) {
-//         setSelectedFile(file);
-//         console.log("Selected file:", file);
-//     }
-// };
+  const handleUploadSubmit = async () => {
+    if (selectedFiles.length > 0) {
+      setIsUploading(true); // Show file details and progress only after upload begins
+      
+      // Prepare upload details
+      setUploadProgress(new Array(selectedFiles.length).fill(0));
+      setUploadedFileNames(selectedFiles.map(file => file.name));
+      setUploadStatuses(new Array(selectedFiles.length).fill(''));
+      setUploadSizes(selectedFiles.map(file => `${(file.size / (1024 * 1024)).toFixed(2)} MB`));
 
-const handleUploadSubmit = async () => {
-  if (selectedFile) {
-      const formData = new FormData();
+      const promises = selectedFiles.map(async (file, index) => {
+        const formData = new FormData();
+        formData.append('file', file);
 
-      // Append the file itself to the FormData
-      formData.append('file', selectedFile);
-
-      console.log("FormData before sending:", Array.from(formData.entries()));
-
-      try {
-          // Make the POST request to upload the file along with metadata
+        try {
           const response = await axios.post('/api/v1/memo/upload', formData, {
-              headers: {
-                  'Content-Type': 'multipart/form-data',
-              },
-              onUploadProgress: (progressEvent: any) => {
-                  const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                  setUploadProgress(percentCompleted);
-              },
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            onUploadProgress: (progressEvent: any) => {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(prev => {
+                const newProgress = [...prev];
+                newProgress[index] = percentCompleted;
+                return newProgress;
+              });
+            },
           });
 
-          // Destructure the response data to get the uploaded file information
           const { id, fileName, fileSize, status } = response.data;
+          setUploadStatuses(prev => {
+            const newStatuses = [...prev];
+            newStatuses[index] = `File uploaded successfully: ${status}`;
+            return newStatuses;
+          });
 
-          // Update the UI with the response data
-          setUploadStatus(`File uploaded successfully: ${status}`);
-          setUploadSize(fileSize);
-          setUploadedFileName(fileName);
-
-          // Log the received data
-          console.log("This is the file ID:", id);
-          console.log("This is the file size:", fileSize);
-          console.log("This is the file name:", fileName);
-
-          // Reset progress bar after a short delay
-          setTimeout(() => setUploadProgress(0), 2000);
-      } catch (error) {
+        } catch (error) {
           console.error('Error uploading file:', error);
-          setUploadStatus('Upload failed.');
-      }
-  } else {
-      setError('No file selected.');
-  }
-}
+          setUploadStatuses(prev => {
+            const newStatuses = [...prev];
+            newStatuses[index] = 'Upload failed.';
+            return newStatuses;
+          });
+        }
+      });
 
+      await Promise.all(promises);
+      setTimeout(() => setUploadProgress(new Array(selectedFiles.length).fill(0)), 2000);
+    } else {
+      setError('No file selected.');
+    }
+  };
 
   const memoizedFileContent = useMemo(() => fileContent, [fileContent]);
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -268,28 +306,78 @@ const handleUploadSubmit = async () => {
       <div style={{ display: 'flex' }}>
         <div className={styles.doc}>
           <div className={styles.upload}>
-            <UploadFiles
+          <UploadFiles
               onChange={handleFileUpload}
               uploadProgress={uploadProgress}
-              uploadedFileName={uploadedFileName}
-              uploadSize={uploadSize}
-              uploadStatus={uploadStatus}
+              uploadedFileNames={uploadedFileNames}
+              uploadStatuses={uploadStatuses}
+              uploadSizes={uploadSizes}
               onSubmit={handleUploadSubmit}
-              onFileNameClick={() => setIsModalOpen(true)}
+              onFileNameClick={(index: number) => {
+                const file = selectedFiles[index];
+                const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                  const content = e.target?.result;
+                  if (content) {
+                    if (fileExtension === 'pdf') {
+                      setFileContent(new Uint8Array(e.target?.result as ArrayBuffer));
+                    } else if (fileExtension === 'docx') {
+                      const arrayBuffer = e.target?.result as ArrayBuffer;
+                      const result = await mammoth.convertToHtml({ arrayBuffer });
+                      setFileContent(result.value);
+                    }
+                    setFileType(fileExtension || '');
+                    setIsModalOpen(true);
+                  }
+                };
+
+                if (file) {
+                  if (fileExtension === 'pdf' || fileExtension === 'docx') {
+                    reader.readAsArrayBuffer(file);
+                  } else {
+                    console.error('Unsupported file type:', fileExtension);
+                  }
+                }
+              }}
             />
+            {error && <p className={styles.error}>{error}</p>}
           </div>
+
+          {/* {isUploading && (
+            <div className={styles.fileDetails}>
+              {uploadedFileNames.map((name, index) => (
+                <div key={index} className={styles.fileItem}>
+                  <div>{name}</div>
+                  <div>Size: {uploadSizes[index]}</div>
+                  <div>Progress: {uploadProgress[index]}%</div>
+                  <div>Status: {uploadStatuses[index]}</div>
+                </div>
+              ))}
+            </div>
+          )} */}
         </div>
       </div>
 
       <FilePreviewModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
         fileType={fileType}
-        fileContent={memoizedFileContent}
+        content={fileContent}
         numPages={numPages}
         onDocumentLoadSuccess={onDocumentLoadSuccess}
         documentFile={documentFile}
-      />
+        onClose={() => setIsModalOpen(false)}
+      >
+        {fileType === 'pdf' && (
+          <Document file={documentFile} onLoadSuccess={onDocumentLoadSuccess}>
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+            ))}
+          </Document>
+        )}
+        {fileType === 'docx' && <div dangerouslySetInnerHTML={{ __html: fileContent as string }} />}
+      </FilePreviewModal>
     </>
   );
 };

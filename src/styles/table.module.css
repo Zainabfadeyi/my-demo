@@ -64,7 +64,7 @@
   
   .tableHeaderCell {
     text-transform: capitalize;
-    padding: 10px;
+    padding: 15px 15px 15px 10px ;
   }
   
   .tableRowEven {
@@ -76,7 +76,7 @@
   }
   
   .tableCell {
-    padding: 10px 10px;
+    padding: 20px 10px;
   }
   
   .noRecordRow {
@@ -155,4 +155,55 @@
   
   .dropdownItem:hover {
     background-color: #f1f1f1;
+  }
+
+  .categoryTop{
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    align-items: center;
+    width: 100%;
+  }
+  .catNew{
+    
+    padding: 10px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    cursor: pointer;
+  }
+  .addCat{
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+
+  }
+  .Catbtn{
+    padding: 10px;
+    border: 1px solid #C5C5C5;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: lightblue;
+    cursor: pointer;
+
+
+
+  }
+  .participantTable{
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    width: 100%;
+    padding: 10px;
+  }
+  .participantsTop{
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    width: 100%;
+  }
+  .participantContainer{
+    height: 90vh;
+  }
+  .documentNo :hover{
+    text-decoration: underline;
+    text-decoration-color: #3b82f6;
   }

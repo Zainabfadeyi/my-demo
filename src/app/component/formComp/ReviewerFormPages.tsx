@@ -1,20 +1,125 @@
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from '../../../styles/memoform.module.css';
-import Doc from '../../pages/Doc';
-import Templates from './Templates';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from '../../../api/axios';
+import { RootState } from '../../../api/store';
+import { useSelector } from 'react-redux';
+import { MemoApi } from '../../../api/memo/MemoApi';
+
+interface RequesterProps{
+  memoId:string|undefined,
+  documentNo:string|undefined
+}
 
 
-const ReviewerFormPages :React.FC = () => {
+const ReviewerFormPages: React.FC<RequesterProps> = ({ memoId, documentNo }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [documentUrl, setDocumentUrl] = useState<string | null>(null);
+    // const { documentNo } = useParams();  // Retrieves the documentNo from the route
+  const location = useLocation();
+  const navigate = useNavigate();
+  const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
+  const userId = useSelector((state: RootState) => state.auth.user?.id);
+  const { recieveMemo } = MemoApi();
+  
+  
+ 
+  const [memoDetails, setMemoDetails] = useState<any>(null);
+
+  useEffect(() => {
+    if (memoId) {
+      axios.get(`/api/v1/memo/${memoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
+        .then((response) => {
+          setMemoDetails(response.data);
+          
+        })
+        .catch((error) => {
+          console.error("Error fetching memo details:", error);
+        });
+    }
+  }, [memoId]);
+
+
+    const handleTemplateSelection = (url: string | null) => {
+      setDocumentUrl(url); // Update the state with the selected document URL
+    };
+
+
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const [selectedUser, setSelectedUser] = useState('');
+  const formatDateTimeForInput = (isoDateTime: string): string => {
+    const date = new Date(isoDateTime);
+  
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    const formatted = `${year}-${month}-${day}T${hours}:${minutes}`;
+    console.log('Formatted DateTime:', formatted);
+    
+    return formatted;
+  };
+const formattedDate = memoDetails?.memo.dateCreated ? formatDateTimeForInput(memoDetails.memo.dateCreated) : '';
+
+const formatDateTimeForDisplay = (isoDateTime: string): string => {
+  const date = new Date(isoDateTime);
+  
+  const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true,
+  };
+
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  return formatter.format(date);
+};
+
+// Assuming memoDetails.date is the ISO date-time string
+const formattedDateForDisplay = memoDetails?.memo.dateCreated ? formatDateTimeForDisplay(memoDetails.memo.dateCreated) : '';
+
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
+
+  // Spread the entire memoDetails object and then update memo properties
+  setMemoDetails({
+    ...memoDetails,
+    memo: {
+      ...memoDetails.memo,
+      [name]: value,
+    }
+  });
+};
+const handleSubmit =async()=>{
+  try{
+    await recieveMemo(memoId)
+  }catch(error){
+    console.error('Error creating memo:', error);
+  }
+}
+
 
   return(
   <div className={styles.formGroup}>
+    {memoDetails ? (
+    <>
+     
      <div style={{ display:"flex", alignItems:"center"}}> 
       <div style={{color:"#1976D2", width:"15%"}}>Memo Document </div>
       
@@ -28,16 +133,16 @@ const ReviewerFormPages :React.FC = () => {
       <div className={styles.field}>
     <div className={styles.formField}>
     
-      <label htmlFor="subject" className={styles.label}>DocumentNo</label>
-      <input id="subject" name="subject" type="text" readOnly className={styles.formInput} />
+      <label htmlFor="documentNo" className={styles.label}>DocumentNo</label>
+      <input id="documentNo" name="documentNo" type="text" onChange={handleInputChange} value={memoDetails.memo.documentNo}readOnly className={styles.formInput} />
     </div>
     <div className={styles.formField}>
-      <label htmlFor="recipient" className={styles.label}>RequestDate</label>
-      <input id="recipient" name="recipient" type="text" readOnly className={styles.formInput} />
+      <label htmlFor="date" className={styles.label}>RequestDate</label>
+      <input id="date" name="date" onChange={handleInputChange} type="datetime-local" value={formattedDate} readOnly className={styles.formInput} />
     </div>
     <div className={styles.formField}>
-      <label htmlFor="from" className={styles.label}>Status</label>
-      <input id="from" name="from" type="text" readOnly className={styles.formInput} />
+      <label  className={styles.label}>Status</label>
+      <input id="text" name="status" type="text" onChange={handleInputChange} value={memoDetails.memo.status}readOnly className={styles.formInput} />
     </div>
     </div>
     </div>
@@ -45,78 +150,80 @@ const ReviewerFormPages :React.FC = () => {
 
     
     <div className={styles.fieldCover}>
-      <div style={{ padding:"12px",margin:"-20px", fontWeight:"900", backgroundColor:"#F9FBFC"}}> 
+      <div style={{ padding:"12px",margin:"-20px", fontWeight:"900",backgroundColor: '#00FF00'}}> 
     Memo Details</div>
 
     <div className={styles.fieldContent }>
     <div className={styles.field}>
     <div className={styles.formField}>
     
-      <label htmlFor="subject" className={styles.label}>Subject</label>
-      <input id="subject" name="subject" type="text" className={styles.formInput} />
-    </div>
+    <label htmlFor="subject" className={styles.label}>Subject</label>
+    <input id="subject" name="subject" type="text" onChange={handleInputChange} readOnly value={memoDetails.memo.subject}className={styles.formInput} />
+  </div>
+  </div>
+    <div className={styles.field}>
+    
+    
     <div className={styles.formField}>
       <label htmlFor="recipient" className={styles.label}>Recipient</label>
-      <input id="recipient" name="recipient" type="text" className={styles.formInput} />
+      <input id="recipient" name="recipient" type="text" onChange={handleInputChange} readOnly value={memoDetails.memo.recipient}className={styles.formInput} />
+    </div>
+    <div className={styles.formField}>
+      <label htmlFor="category" className={styles.label}>CategoryType</label>
+      <input id="category" name="category" type="text" onChange={handleInputChange} readOnly value={memoDetails.memo.category}className={styles.formInput} />
     </div>
     </div>
     <div className={styles.field}>
     <div className={styles.formField}>
-      <label htmlFor="from" className={styles.label}>From</label>
-      <input id="from" name="from" type="text" className={styles.formInput} />
+      <label  className={styles.label}>From</label>
+      <input id="sender" name="sender" type="text" onChange={handleInputChange} readOnly value={memoDetails.memo.sender}className={styles.formInput} />
     </div>
     <div className={styles.formField}>
       <label htmlFor="date" className={styles.label}>Date</label>
-      <input id="date" name="date" type="date" className={styles.formInput} />
+      <input id="date" name="date" type="date" onChange={handleInputChange} readOnly value={memoDetails.memo.date} className={styles.formInput} />
     </div>
     </div>
     <div className={styles.formField}>
       <label htmlFor="description" className={styles.label}>Description</label>
-      <textarea id="description" name="description" rows={4} className={styles.input}></textarea>
+      <textarea id="description" name="description" rows={4} readOnly onChange={handleInputChange} value={memoDetails.memo.description} className={styles.input}></textarea>
     </div>
     </div>
     </div>
 
     
-    <div className={styles.docsCover}>
-    <div style={{ padding:"12px",margin:"-20px", fontWeight:"900", backgroundColor:"#F9FBFC"}}> 
-    Attachment</div>
-      <div className={styles.docsContent}>
-    <div className={styles.formFieldAttachment}>
-      <label htmlFor="documentName" className={styles.label}>Document Name/Description</label>
-      <textarea id="documentName" name="documentName"  rows={6} className={styles.input} > </textarea>
-    </div>
-    <div style={{width:"100%"}}>
-      
-      <Doc/>
-    </div>
-    </div>
-    </div>
+    
 
     <div className={styles.fieldCover} style={{border:"1px solid #FF7668"}}>
       <div style={{ padding:"12px",margin:"-20px", fontWeight:"900", backgroundColor:"#FF7668"}}> 
-    Action</div>
+    Location</div>
 
-    <div className={styles.fieldContent }>
+    <div className={styles.formField} style={{marginTop:"20px"}}>
+            <label className={styles.label}>Landmark</label>
+            <input
+              id="landmark"
+              name="landmark"
+              type="text"
+              value={memoDetails.memo.landmark}
+              className={styles.formInput}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className={styles.formField}>
+            <label htmlFor="department" className={styles.label}>Department</label>
+            <input
+              id="department"
+              name="department"
+              value={memoDetails.memo.department}
+              type="text"
+              className={styles.formInput}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
           
-          
-          <label>Appproval Considerations</label>
-            <select id="user" name="user"  className={styles.userInput} onChange={(e) => setSelectedUser(e.target.value)} value={selectedUser}> 
-            
-              <option value="user1">Approved</option>
-              <option value="user2">Rejected</option>
-
-            </select>
-    <div className={styles.formField}>
-      <label htmlFor="description" className={styles.label}>Description</label>
-      <textarea id="description" name="description" rows={4} className={styles.input}></textarea>
     </div>
-    </div>
-    </div>
-    <div>
-    
-    <Templates/>
-    </div>
+   
     <div className={styles.tableCover}>
     <div style={{ margin:"-20px",padding:"12px", fontWeight:"900", backgroundColor:"#F9FBFC"}}> 
     History</div>
@@ -126,21 +233,33 @@ const ReviewerFormPages :React.FC = () => {
         <table className={styles.historyTable}>
           <thead >
             <tr  className={styles.head}>
-              <th className={styles.head} >Created By</th>
+              <th  className={styles.head} >Created By</th>
               <th className={styles.head}>Status</th>
               <th className={styles.head}>Date</th>
             </tr>
           </thead>
           <tbody className={styles.tbody}>
             <tr>
-              <td className={styles.data}>user1</td>
+              <td className={styles.data}>{memoDetails.memo.createdBy}</td>
               <td className={styles.data}>Submitted</td>
-              <td className={styles.data}>12/12/2021</td>
+              <td className={styles.data}>{formattedDateForDisplay}</td>
             </tr>
           </tbody>
         </table>
       </div>
       </div>
+      <div style={{ textAlign: 'right', marginTop: '20px' }}>
+        <button color="primary" onClick={handleSubmit} className={styles.RequesterBtn}>
+          Submit
+        </button>
+        <button color="primary"  className={styles.RequesterBtn}>
+          Cancel
+        </button>
+      </div>
+      </>
+      ) : (
+        <p>Loading memo details...</p>
+      )}
   </div>
   )
 };

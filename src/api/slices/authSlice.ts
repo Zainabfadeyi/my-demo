@@ -9,7 +9,7 @@ export interface User {
    email:string;
    role:string;
    signature:string;
-   token:string
+   accessToken:string
 }
 
 interface AuthState {
@@ -56,7 +56,7 @@ const authSlice = createSlice({
     login: (state, action: PayloadAction<User>) => {
       state.isAuthenticated = true;
       state.user = action.payload;
-      state.token=action.payload.token
+      state.token=action.payload.accessToken
       saveState(state);
     },
     logout: (state) => {

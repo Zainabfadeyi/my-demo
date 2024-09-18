@@ -49,12 +49,15 @@ export interface AuthResponse{
 // }
 export const registerApi = async (formData: FormData): Promise<AuthResponse> => {
     try {
+        console.log("this is reaponnse ", formData)
         const response = await axios.post<AuthResponse>('/api/v1/auth/register', formData, {
             headers: {
                 'Content-Type': 'application/json' // Ensure the content type is set correctly
             }
         });
+        
         return response.data;
+       
     } catch (error) {
         throw new Error(`Error during registration: ${error}`);
     }

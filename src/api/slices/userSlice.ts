@@ -1,21 +1,29 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from "../store";
+import { User } from './authSlice';
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
+
 
 interface UserState {
   data: User | null;
 }
 
-const initialState: UserState = {
-  data: null,
+;
+const loadState = (): UserState | undefined => {
+  try {
+    const serializedState = localStorage.getItem('userState');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
 };
+const initialState: UserState = loadState() || {
+  data: null,
+}
 
 const userSlice = createSlice({
   name: 'user',

@@ -49,25 +49,17 @@ export const SidebarData: SidebarItem[] = [
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     subNav: [
-      {
-        title: 'My Active Task',
-        path: '/active-task',
-        cName: 'sub-nav'
-      },
+      
       {
         title: 'My Request',
         path: '/my-request',
         cName: 'sub-nav'
       },
       {
-        title: 'All Active Task',
-        path: '/all-active-task',
-      },
-      {
         title: 'All Request',
         path: '/all-request',
-        
-      }
+        cName: 'sub-nav'
+      },
     ]
   },
   {
@@ -88,9 +80,13 @@ export const SidebarData: SidebarItem[] = [
         path: '/category-type',
       },
       {
-        title: 'Templates',
-        path: '/templates',
+        title: 'Locations',
+        path: '/locations',
       },  
+      {
+        title: 'Participants',
+        path: '/participants',
+      }, 
     ]
   },
   

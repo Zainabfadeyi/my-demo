@@ -6,70 +6,108 @@ import {
     getPaginationRowModel,
     useReactTable,
   } from "@tanstack/react-table";
-  import { useState } from "react";
-  import { DOCUMENTS } from "../../data";
+  import { useEffect, useState } from "react";
   import DebouncedInput from "../../app/component/tables/DebouncedInput";
   import { CiSearch } from "react-icons/ci";
   import styles from "../../styles/table.module.css";
-import { string } from "yup";
 import ActionDropdown from "../component/tables/ActionDropDown";
+import { useSelector } from "react-redux";
+import { RootState } from "../../api/store";
+import axios from "../../api/axios";
+import { useNavigate } from "react-router-dom";
   
   // Define the Document type
   interface Document {
     documentNo: string;
     dateCreated: string;
     subject: string;
-    createdBy: string;
+    recipient: string;
     category:string;
-    taskStatus: string;
+    landmark:string;
+    department:string;
+    status: string;
+    dateReceived:string;
     actions: string;
   }
   
   const MyTask = () => {
     const columnHelper = createColumnHelper<Document>();
+    const navigate = useNavigate();
   
     const columns = [
       columnHelper.accessor("documentNo", {
         header: "Document No",
-        cell: (info) => <span>{info.getValue()}</span>,
+        cell: (info) => (
+          <a
+            onClick={() => navigate(`/overview/${info.getValue()}`)}
+            style={{ cursor: 'pointer', color: 'blue'}}
+            className={styles.documentNo}
+          >
+            {info.getValue()}
+          </a>
+        ),
       }),
       columnHelper.accessor("dateCreated", {
         header: "Date Created",
-        cell: (info) => <span>{info.getValue()}</span>,
+        cell: (info) =>  {
+          const formattedDate = formatDateTimeForInput(info.getValue()) ;
+          return <span>{formattedDate}</span>;
+        },
       }),
+      
       columnHelper.accessor("subject", {
         header: "Subject",
         cell: (info) => <span>{info.getValue()}</span>,
       }),
-      columnHelper.accessor("createdBy", {
-        header: "Created By",
+      columnHelper.accessor("recipient", {
+        header: "Recipient",
+        cell: (info) => <span>{info.getValue()}</span>,
+      }),
+     
+      columnHelper.accessor("department", {
+        header: "Department",
         cell: (info) => <span>{info.getValue()}</span>,
       }),
       columnHelper.accessor("category", {
         header: "Category",
-        cell: (info) => <span>{info.getValue()}</span>,
+        cell: (info) => (
+          <span style={{ backgroundColor: '#D0D4D8',padding: '6px', borderRadius: '10px', fontSize:"13px" }}>
+            {info.getValue()}
+          </span>
+        ),
       }),
       
 
-      columnHelper.accessor("taskStatus", {
+      columnHelper.accessor("status", {
         header: "status",
         cell: (info) => {
-          const taskStatus = info.getValue();
+          const status = info.getValue();
           return (
             <span
               className={styles.categoryCell}
               style={{
-                backgroundColor: colors[taskStatus] || 'none', 
+                backgroundColor: colors[status] || 'none', 
                 padding:"5px",
-                fontWeight:"600",
-                borderRadius:"10px"
+                fontWeight:"900",
+                borderRadius:"10px",
+                fontSize:"13px"
               }}
             >
-              {taskStatus}
+              {status}
             </span>
           );
         },
       }),
+      // columnHelper.accessor("dateReceived", {
+      //   header: "Date Received",
+      //   cell: (info) => {
+      //     const dateReceived = info.getValue();
+      //     // Only format if dateReceived is available, else return an empty string
+      //     const formattedDate = dateReceived ? formatDateTimeForInput(dateReceived) : '';
+      //     return <span>{formattedDate}</span>;
+      //   },
+          
+      // }),
 
       columnHelper.accessor("actions", {
         header: "Actions",
@@ -81,7 +119,6 @@ import ActionDropdown from "../component/tables/ActionDropDown";
         ),
       }),
     ];
-    const [datas, setData] = useState([]);
     const handleView = (document:Document) => {
         console.log('View transaction:', document);
       };
@@ -91,11 +128,15 @@ import ActionDropdown from "../component/tables/ActionDropDown";
       };
   
     const colors: { [key: string]: string } = {
-         Inprogress:"#9EC8DE",
-         completed:"#7EBAA6",
-         New:"#9EC8DE"
+         PENDING:"#9EC8DE",
+         NEW:"#7EBAA6",
+         RECEIVED:"#DE615B"
+
+         
     };
-    const [data] = useState(() => [...DOCUMENTS]);
+    const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
+  const userId = useSelector((state: RootState) => state.auth.user?.id);
+    const [data, setData] = useState<Document[]>([]);
     const [globalFilter, setGlobalFilter] = useState("");
   
     const table = useReactTable<Document>({
@@ -108,6 +149,46 @@ import ActionDropdown from "../component/tables/ActionDropDown";
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
     });
+    
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`/api/v1/memo/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}` 
+              }
+        });
+          setData(response.data);
+        } catch (error) {
+          console.error("Error fetching memos:", error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
+    const formatDateTimeForInput = (isoDateTime: string): string => {
+      const date = new Date(isoDateTime);
+    
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+    
+      // Get the hours and determine AM or PM
+      let hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const amPm = hours >= 12 ? 'PM' : 'AM';
+    
+      // Convert hours to 12-hour format
+      hours = hours % 12 || 12;  // Converts '0' to '12' for midnight
+    
+      const formatted = `${year}-${month}-${day} ${String(hours).padStart(2, '0')}:${minutes} ${amPm}`;
+      console.log('Formatted DateTime:', formatted);
+    
+      return formatted;
+    };
+    
   
     return (
       <div className={styles.tableContainer}>
