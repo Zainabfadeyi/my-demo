@@ -4,6 +4,8 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
     useReactTable,
   } from "@tanstack/react-table";
   import { useEffect, useState } from "react";
@@ -15,6 +17,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../api/store";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import DownloadBtn from "../component/tables/DowmloadBtn";
+import { RiArrowUpDownLine } from "react-icons/ri";
+import DeleteMemo from "../component/functions/DeleteMemo";
   
   // Define the Document type
   interface Document {
@@ -32,6 +37,9 @@ import { useNavigate } from "react-router-dom";
   
   const MyTask = () => {
     const columnHelper = createColumnHelper<Document>();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [memoToDelete, setMemoToDelete] = useState<Document | null>(null);
+  const [sorting, setSorting] = useState<SortingState>([]);
     const navigate = useNavigate();
   
     const columns = [
@@ -98,16 +106,7 @@ import { useNavigate } from "react-router-dom";
           );
         },
       }),
-      // columnHelper.accessor("dateReceived", {
-      //   header: "Date Received",
-      //   cell: (info) => {
-      //     const dateReceived = info.getValue();
-      //     // Only format if dateReceived is available, else return an empty string
-      //     const formattedDate = dateReceived ? formatDateTimeForInput(dateReceived) : '';
-      //     return <span>{formattedDate}</span>;
-      //   },
-          
-      // }),
+  
 
       columnHelper.accessor("actions", {
         header: "Actions",
@@ -119,20 +118,43 @@ import { useNavigate } from "react-router-dom";
         ),
       }),
     ];
-    const handleView = (document:Document) => {
-        console.log('View transaction:', document);
+     // Navigate to EditMemo with the selected memo's document number
+  const handleView = (document: Document) => {
+    console.log('View transaction:', document);
+    navigate(`/edit-memo/${document.documentNo}`); // Assuming the documentNo is the unique identifier
+  };;
+      const handleDelete = (document: Document) => {
+        setMemoToDelete(document);
+        setIsDeleteDialogOpen(true);
       };
-      
-      const handleDelete = (document:Document) => {
-        console.log('View transaction:', document);
-      };
-  
     const colors: { [key: string]: string } = {
          PENDING:"#9EC8DE",
          NEW:"#7EBAA6",
-         RECEIVED:"#DE615B"
+         RECEIVED:"green",
+         REJECTED:"#DE615B"
 
          
+    };
+    const handleDeleteConfirm = async (memoId: string) => {
+      try {
+        const response = await axios.delete(`/api/v1/memo/${memoId}`, 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}` 
+            }
+      });
+        if (response.data) {
+          
+          console.log('Memo deleted successfully.');
+        } else {
+          console.error('Failed to delete memo.');
+        }
+      } catch (error) {
+        console.error('Error deleting memo:', error);
+      } finally {
+        setIsDeleteDialogOpen(false);
+        setMemoToDelete(null);
+      }
     };
     const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
   const userId = useSelector((state: RootState) => state.auth.user?.id);
@@ -144,10 +166,13 @@ import { useNavigate } from "react-router-dom";
       columns,
       state: {
         globalFilter,
+        sorting
       },
       getFilteredRowModel: getFilteredRowModel(),
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
+      getSortedRowModel:getSortedRowModel(),
+      onSortingChange:setSorting
     });
     
     useEffect(() => {
@@ -194,6 +219,7 @@ import { useNavigate } from "react-router-dom";
       <div className={styles.tableContainer}>
         <div className={styles.tableHeader}>
           <div className={styles.searchContainer}>
+          <div style={{display:"flex", width:"100%", alignItems:"center"}}>
             <CiSearch style={{background:"#000"}} />
             <DebouncedInput
               value={globalFilter ?? ""}
@@ -201,17 +227,30 @@ import { useNavigate } from "react-router-dom";
               
             />
           </div>
+          <DownloadBtn data={data} fileName={"My Requests"} />
+          </div>
         </div>
         <table className={styles.table}>
-          <thead className={styles.tableHeader}>
+          <thead >
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className={styles.tableHeaderCell}>
-                    {flexRender(
+                    {/* {flexRender(
                       header.column.columnDef.header,
                       header.getContext()
-                    )}
+                    )} */}
+                    <div
+                    className={`${
+                      header.column.getCanSort() ? styles.sort : ""
+                    }`}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    <span>
+                      {header.column.getIsSorted() ? (header.column.getIsSorted() === 'asc' ? ' 🔼' : ' 🔽') : <RiArrowUpDownLine />}
+                    </span>
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -240,7 +279,6 @@ import { useNavigate } from "react-router-dom";
             )}
           </tbody>
         </table>
-        {/* pagination */}
         <div className={styles.paginationContainer}>
           <button
             onClick={() => {
@@ -294,6 +332,12 @@ import { useNavigate } from "react-router-dom";
             ))}
           </select>
         </div>
+        <DeleteMemo
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => memoToDelete && handleDeleteConfirm(memoToDelete.documentNo)}
+        documentNo={memoToDelete?.documentNo}
+      />
       </div>
     );
   };

@@ -4,17 +4,21 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
     useReactTable,
   } from "@tanstack/react-table";
   import { useEffect, useState } from "react";
   import DebouncedInput from "./DebouncedInput";
   import { CiSearch } from "react-icons/ci";
   import styles from "../../../styles/table.module.css";
-import ActionDropdown from "./ActionDropDown";
 import axios from "../../../api/axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../api/store";
 import { useNavigate } from "react-router-dom";
+import ActionInboxDropdown from "./ActionInboxDropDown";
+import RejectMemo from "../functions/RejectMemo";
+import { RiArrowUpDownLine } from "react-icons/ri";
   
   // Define the Document type
   interface Document {
@@ -35,6 +39,9 @@ import { useNavigate } from "react-router-dom";
   const TanStackTable = () => {
     const columnHelper = createColumnHelper<Document>();
     const navigate = useNavigate();
+    const [isRejectModalOpen, setRejectModalOpen] = useState(false);
+    const [memoToReject, setMemoToReject] = useState<Document | null>(null);
+
   
     const columns = [
       columnHelper.accessor("documentNo", {
@@ -114,8 +121,8 @@ import { useNavigate } from "react-router-dom";
       columnHelper.accessor("actions", {
         header: "Actions",
         cell: (info) => (
-          <ActionDropdown
-            onView={() => handleView(info.row.original)}
+          <ActionInboxDropdown
+          onReject={() => handleReject(info.row.original)}
             onDelete={() => handleDelete(info.row.original)}
           />
         ),
@@ -124,7 +131,8 @@ import { useNavigate } from "react-router-dom";
     const colors: { [key: string]: string } = {
       PENDING:"#9EC8DE",
       NEW:"#7EBAA6",
-      RECEIVED:"#DE615B"
+      RECEIVED:"green",
+      REJECTED:"#DE615B"
  };
     
   const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
@@ -151,9 +159,39 @@ import { useNavigate } from "react-router-dom";
       };
   
       fetchData();
-    }, []);
-    const handleView = (document:Document) => {
-      console.log('View transaction:', document);
+    }, [userId, accessToken]);
+    const handleconfirmReject = async (documentNo: string) => {
+
+      try {
+        const response = await axios.put(`/api/v1/memo/reject/${documentNo}`, 
+          {}, 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}` 
+            }
+      });
+        if (response.data) {
+          
+          console.log('Memo deleted successfully.');
+        } else {
+          console.error('Failed to delete memo.');
+        }
+      } catch (error) {
+        console.error('Error deleting memo:', error);
+      } finally {
+        setRejectModalOpen(false)
+        setMemoToReject(null);
+      }
+    };
+    const handleReject = (document: Document) => {
+      setMemoToReject(document);  // Correct state update
+      setRejectModalOpen(true);   // Open the modal
+      console.log(isRejectModalOpen)
+    };
+    
+  
+    const handleCloseRejectModal = () => {
+      setRejectModalOpen(false);
     };
     
     const handleDelete = (document:Document) => {
@@ -177,10 +215,11 @@ import { useNavigate } from "react-router-dom";
       hours = hours % 12 || 12;  // Converts '0' to '12' for midnight
     
       const formatted = `${year}-${month}-${day} ${String(hours).padStart(2, '0')}:${minutes} ${amPm}`;
-      console.log('Formatted DateTime:', formatted);
+      
     
       return formatted;
     };
+    const [sorting, setSorting] = useState<SortingState>([]);
     
   
     const table = useReactTable<Document>({
@@ -188,10 +227,13 @@ import { useNavigate } from "react-router-dom";
       columns,
       state: {
         globalFilter,
+        sorting
       },
       getFilteredRowModel: getFilteredRowModel(),
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
+      getSortedRowModel:getSortedRowModel(),
+      onSortingChange:setSorting
     });
   
     return (
@@ -206,15 +248,22 @@ import { useNavigate } from "react-router-dom";
           </div>
         </div>
         <table className={styles.table}>
-          <thead className={styles.tableHeader}>
+          <thead >
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className={styles.tableHeaderCell}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                    <div
+                    className={`${
+                      header.column.getCanSort() ? styles.sort : ""
+                    }`}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    <span>
+                      {header.column.getIsSorted() ? (header.column.getIsSorted() === 'asc' ? ' 🔼' : ' 🔽') : <RiArrowUpDownLine />}
+                    </span>
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -230,7 +279,7 @@ import { useNavigate } from "react-router-dom";
                   }
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className={styles.tableCell}>
+                    <td key={cell.id} >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -297,6 +346,12 @@ import { useNavigate } from "react-router-dom";
             ))}
           </select>
         </div>
+        <RejectMemo
+        isOpen={isRejectModalOpen}
+        onClose={() => setRejectModalOpen(false)}
+        onConfirm={() => memoToReject && handleconfirmReject(memoToReject.documentNo)}
+        documentNo={memoToReject?.documentNo}
+      />
       </div>
     );
   };

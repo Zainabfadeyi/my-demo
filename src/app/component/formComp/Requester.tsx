@@ -393,7 +393,7 @@ const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, 
   }, [accessToken]);
 
   return (
-    <div className={styles.formGroup}>
+    <form className={styles.formGroup}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{ color: '#1976D2', width: '15%' }}>Memo Document</div>
         <div className={styles.hr}></div>
@@ -507,6 +507,7 @@ const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, 
 
       <div style={{ textAlign: 'right', marginTop: '20px' }}>
         <button
+        type='submit'
           onClick={handleFormSubmitClick}
           className={styles.RequesterBtn}
           disabled={isLoading}
@@ -514,7 +515,7 @@ const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, 
           Dispatch
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 

@@ -3,11 +3,11 @@ import { IoIosMore } from 'react-icons/io';
 import styles from '../../../styles/table.module.css';
 
 interface ActionsDropdownProps {
-  onView: () => void;
+  onReject: () => void;
   onDelete: () => void;
 }
 
-const ActionDropdown: FC<ActionsDropdownProps> = ({ onView, onDelete }) => {
+const ActionInboxDropdown: FC<ActionsDropdownProps> = ({ onReject, onDelete }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +38,7 @@ const ActionDropdown: FC<ActionsDropdownProps> = ({ onView, onDelete }) => {
       </div>
       {dropdownOpen && (
         <div className={styles.dropdownMenu}>
-          <div className={styles.dropdownItem} onClick={onView}>Edit</div>
+          <div className={styles.dropdownItem} onClick={onReject}>Reject</div>
           <div className={styles.dropdownItem} onClick={onDelete}>Delete</div>
         </div>
       )}
@@ -46,4 +46,4 @@ const ActionDropdown: FC<ActionsDropdownProps> = ({ onView, onDelete }) => {
   );
 };
 
-export default ActionDropdown;
+export default ActionInboxDropdown;

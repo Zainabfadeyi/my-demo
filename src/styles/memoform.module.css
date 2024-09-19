@@ -179,6 +179,7 @@
     box-sizing: border-box;
     border-radius: 10px;
     border: 1px solid #c5c5c5;
+    cursor: pointer;
   }
 .warningMessage{
     color: red;

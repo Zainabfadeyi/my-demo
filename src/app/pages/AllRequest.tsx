@@ -4,18 +4,22 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
     useReactTable,
   } from "@tanstack/react-table";
   import { useEffect, useState } from "react";
   import DebouncedInput from "../component/tables/DebouncedInput";
   import { CiSearch } from "react-icons/ci";
   import styles from "../../styles/table.module.css";
-
+  import { RiArrowUpDownLine } from "react-icons/ri";
 import ActionDropdown from "../component/tables/ActionDropDown";
 import { useSelector } from "react-redux";
 import { RootState } from "../../api/store";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import DownloadBtn from "../component/tables/DowmloadBtn";
+import DeleteMemo from "../component/functions/DeleteMemo";
   
   // Define the Document type
   interface Document {
@@ -34,6 +38,8 @@ import { useNavigate } from "react-router-dom";
   
   const MyRequest = () => {
     const columnHelper = createColumnHelper<Document>();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [memoToDelete, setMemoToDelete] = useState<Document | null>(null);
     const navigate = useNavigate();
   
     const columns = [
@@ -127,18 +133,20 @@ import { useNavigate } from "react-router-dom";
         console.log('View transaction:', document);
       };
       
-      const handleDelete = (document:Document) => {
-        console.log('View transaction:', document);
+      const handleDelete = (document: Document) => {
+        setMemoToDelete(document);
+        setIsDeleteDialogOpen(true);
       };
   
       const colors: { [key: string]: string } = {
         PENDING:"#9EC8DE",
         NEW:"#7EBAA6",
-        RECEIVED:"#DE615B"
+        RECEIVED:"green",
+      REJECTED:"#DE615B"
    };
     const [data, setData] = useState<Document[]>([]);
     const [globalFilter, setGlobalFilter] = useState("");
-
+    const [sorting, setSorting] = useState<SortingState>([]);
     const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
     const userId = useSelector((state: RootState) => state.auth.user?.id);
     const table = useReactTable<Document>({
@@ -146,10 +154,13 @@ import { useNavigate } from "react-router-dom";
       columns,
       state: {
         globalFilter,
+        sorting
       },
       getFilteredRowModel: getFilteredRowModel(),
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
+      getSortedRowModel:getSortedRowModel(),
+      onSortingChange:setSorting
     });
     useEffect(() => {
       const fetchData = async () => {
@@ -192,11 +203,33 @@ import { useNavigate } from "react-router-dom";
     
       return formatted;
     };
+    const handleDeleteConfirm = async (memoId: string) => {
+      try {
+        const response = await axios.delete(`/api/v1/memo/${memoId}`, 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}` 
+            }
+      });
+        if (response.data) {
+          // Handle successful deletion (e.g., refresh the data)
+          console.log('Memo deleted successfully.');
+        } else {
+          console.error('Failed to delete memo.');
+        }
+      } catch (error) {
+        console.error('Error deleting memo:', error);
+      } finally {
+        setIsDeleteDialogOpen(false);
+        setMemoToDelete(null);
+      }
+    };
   
     return (
       <div className={styles.tableContainer}>
         <div className={styles.tableHeader}>
           <div className={styles.searchContainer}>
+            <div style={{display:"flex", width:"100%", alignItems:"center"}}>
             <CiSearch style={{background:"#000"}} />
             <DebouncedInput
               value={globalFilter ?? ""}
@@ -204,17 +237,30 @@ import { useNavigate } from "react-router-dom";
               
             />
           </div>
+          <DownloadBtn data={data} fileName={"All Requests"} />
+          </div>
         </div>
         <table className={styles.table}>
-          <thead className={styles.tableHeader}>
+          <thead >
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className={styles.tableHeaderCell}>
-                    {flexRender(
+                    {/* {flexRender(
                       header.column.columnDef.header,
                       header.getContext()
-                    )}
+                    )} */}
+                    <div
+                    className={`${
+                      header.column.getCanSort() ? styles.sort : ""
+                    }`}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    <span>
+                      {header.column.getIsSorted() ? (header.column.getIsSorted() === 'asc' ? ' 🔼' : ' 🔽') : <RiArrowUpDownLine />}
+                    </span>
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -297,6 +343,12 @@ import { useNavigate } from "react-router-dom";
             ))}
           </select>
         </div>
+        <DeleteMemo
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={() => memoToDelete && handleDeleteConfirm(memoToDelete.documentNo)}
+        documentNo={memoToDelete?.documentNo}
+      />
       </div>
     );
   };

@@ -19,6 +19,7 @@ import Participants from './app/pages/Participants';
 import ReviewerFormPages from './app/component/formComp/ReviewerFormPages';
 import Locations from './app/pages/Locations';
 import Overview from './app/pages/Overview';
+import EditMemo from './app/component/functions/EditMemo';
 
 function App() {
   const [selectedDocument, setSelectedDocument] = useState('');
@@ -43,13 +44,12 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/my-request" element={<MyTask />} />
       <Route path="/all-request" element={<MyRequest/>} />
-      <Route path="/pdf" element={<FillAndSignPDF/>} />
-      <Route path="/templates" element={<Template />} />
       <Route path="/category-type" element={<CategoryTable/>}/>
       <Route  path='/participants' element={<Participants/>}/>
       <Route path='/locations' element={<Locations/>}/>
       <Route path='/overview/:documentNo' element={<Overview/>}/>
       {/* <Route path="/reviewer" element={<ReviewerFormPages />} /> */}
+      <Route path="/edit-memo/:documentNo" element={<EditMemo />} />
     </Route>
    
     </Routes>

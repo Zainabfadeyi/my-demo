@@ -27,7 +27,7 @@ const AuthLayout = () => {
               </div>
               </>
               ) : (
-                <Navigate to={"/Login"} />
+                <Navigate to={"/login"} />
               )
           ): null
         )

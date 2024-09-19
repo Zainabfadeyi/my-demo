@@ -12,6 +12,7 @@
     justify-content: space-between;
     margin-bottom: 10px;
     align-items: center;
+    display: flex;
   }
   
   .searchContainer {
@@ -206,4 +207,21 @@
   .documentNo :hover{
     text-decoration: underline;
     text-decoration-color: #3b82f6;
+  }
+  .sort{
+    cursor: pointer;
+  }
+  .DownloadBtn{
+    background-color: blue;
+    border: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 15px;
+    column-gap: 4px;
+    cursor: pointer;
+  }
+  .DownloadBtn:hover{
+    background-color: #3b82f6;
   }
