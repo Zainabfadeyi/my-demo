@@ -135,7 +135,7 @@ const Locations: React.FC = () => {
 
       {/* Locations Table */}
       <table className={styles.participantTable}>
-        <thead className={styles.tableHeader}>
+        <thead >
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (

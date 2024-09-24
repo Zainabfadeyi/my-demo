@@ -9,6 +9,7 @@ import Weather from '../component/chart/Weather'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../api/store'
 import axios from '../../api/axios'
+import MyTask from './MyTask'
 
 const Dashboard:React.FC = () => {
   const [totalRequests, setTotalRequests] = useState<number>(0);
@@ -162,8 +163,13 @@ const Dashboard:React.FC = () => {
         </div>
       
       
+      
     
     </div>
+    <div style={{ padding: '20px', margin:"-9px", fontWeight: '500', fontSize:"18px"}}>
+            My Request
+            </div>
+    <MyTask/>
     </div>
   )
 }

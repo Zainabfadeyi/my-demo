@@ -5,13 +5,14 @@ import axios from '../../../api/axios';
 import { RootState } from '../../../api/store';
 import { useSelector } from 'react-redux';
 import { MemoApi } from '../../../api/memo/MemoApi';
+import LoadingSpinner from '../chart/LoadingSpinner';
 
 interface RequesterProps{
   memoId:string|undefined,
   documentNo:string|undefined
 }
 
-
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const ReviewerFormPages: React.FC<RequesterProps> = ({ memoId, documentNo }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [documentUrl, setDocumentUrl] = useState<string | null>(null);
@@ -21,6 +22,7 @@ const ReviewerFormPages: React.FC<RequesterProps> = ({ memoId, documentNo }) => 
   const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
   const userId = useSelector((state: RootState) => state.auth.user?.id);
   const { recieveMemo } = MemoApi();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
   
  
@@ -107,11 +109,21 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectEle
   });
 };
 const handleSubmit =async()=>{
+  setIsLoading(true);
   try{
     await recieveMemo(memoId)
+    await delay(2000);
+    navigate('/inbox')
   }catch(error){
     console.error('Error creating memo:', error);
   }
+  finally {
+
+    setIsLoading(false);
+  }
+}
+if (isLoading) {
+  return <LoadingSpinner size={50} message="Reviewing your memo..." />;
 }
 
 

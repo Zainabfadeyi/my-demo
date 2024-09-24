@@ -19,15 +19,12 @@
     text-orientation: mixed;
   }
   
-  .progressBar.employment-agreement {
-    background-color:#2379EA;
+  
+  .progressBar.employees-documents {
+    background-color:#2379EA ;
   }
   
-  .progressBar.new-employer-document {
-    background-color: #2379EA;
-  }
-  
-  .progressBar.departmental-benefits {
+  .progressBar.departmental-benefit{
     background-color:#2379EA ;
   }
   

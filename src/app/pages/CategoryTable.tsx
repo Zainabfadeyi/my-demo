@@ -203,7 +203,7 @@ const CategoryTable: React.FC = () => {
       )}
       </div>
       <table className={styles.table}>
-        <thead className={styles.tableHeader} >
+        <thead  >
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (

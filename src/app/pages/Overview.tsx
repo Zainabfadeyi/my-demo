@@ -3,7 +3,8 @@ import styles from '../../styles/memoform.module.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../api/store';
 import axios from '../../api/axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AiOutlineForm } from 'react-icons/ai';
 
 
 const Overview: React.FC = () => {
@@ -11,6 +12,7 @@ const Overview: React.FC = () => {
     const { documentNo } = useParams<{ documentNo: string }>();
     const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
     const userId = useSelector((state: RootState) => state.auth.user?.id);
+    const navigate=useNavigate()
   
     useEffect(() => {
       if (documentNo && accessToken) {
@@ -53,12 +55,21 @@ const Overview: React.FC = () => {
       
         return formatted;
       };
-      
+      const handleCancel= () =>{
+        navigate('/my-request')
+      }      
   
     return (
       <div className={styles.formGroup}>
         <div style={{ display: "flex", alignItems: "center", padding:"5px" }}>
-          <div style={{ color: "#1976D2", width: "15%" , fontSize:"20px"}}>{documentNo}</div>
+          <div style={{ color: "#1976D2", width: "15%" , fontSize:"20px", columnGap:"10px", alignItems:"center", display:"flex"}}>
+            <div style={{fontWeight:"900", fontSize:"23px"}}>
+            <AiOutlineForm />
+            </div>
+            <div>
+          {documentNo}
+          </div>
+          </div>
           <div className={styles.hr}></div>
         </div>
   
@@ -160,7 +171,7 @@ const Overview: React.FC = () => {
       </div>
       </div>
       <div style={{ textAlign: 'right', marginTop: '20px' }}>
-        <button color="primary"  className={styles.RequesterBtn}>
+        <button color="primary"onClick={handleCancel}  className={styles.RequesterBtn}>
           Cancel
         </button>
       </div>

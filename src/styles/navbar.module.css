@@ -46,3 +46,20 @@
     cursor: pointer;
     color: red;
   }
+  .profile{
+    border-radius: 15px;
+    height: 35px;
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    margin-right: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: none;
+  }
+  .placeholder{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+   
+}

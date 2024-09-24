@@ -1,14 +1,28 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+
+.cover{
+    display: flex;
+    background-image: url('../../public/wallpaper.jpg'); /* Make sure to specify the correct image file name and extension */
+    background-size: cover; /* This will make the image cover the entire background */
+    background-position: center; /* Center the image */
+    height: 100vh; 
+
+}
+.Reg {
+    width: 100%;
+    display: flex;
+    background-image: url('../../public/wallpaper.jpg'); /* Make sure to specify the correct image file name and extension */
+    background-size: cover; /* This will make the image cover the entire background */
+    background-position: center; /* Center the image */
+    height: 100vh; /* Ensure it covers the full height of the viewport */
+}
 .formReg{
     justify-content: center;
-    /* width: 50%; */
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 0;
-    padding: 15px;
-    border: 1px solid #e5e5e5;
+    padding: 10px;
     border-radius: 10px;
 
 }
@@ -17,17 +31,27 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    height: auto;
+
+}
+.LoginContainer{
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: auto;
     align-items: center;
-    padding: 30px 0;
+
 }
 .ImgContainer{
     justify-content: center;
-    width: 50%;
+    width: 100%;
     display: flex;
     align-items: center;
+    font-size: 50px;
 }
 .RegImage{
-    width: 70%;
+    width: 100%;
     height: auto;
 }
 
@@ -46,11 +70,9 @@
 .Reg{
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 95%;
-    max-width: 1000px;
+    
     margin: 0 auto;
-    height: 100dvh;
+
 }
 .LogoWrapper {
     display: flex;
@@ -60,46 +82,64 @@
     width: 100%;
 }
 .LogoWrapper a {
-    font-size: 25px;
+    font-size: 50px;
+    text-decoration: none;
 }
 .LogoWrapper a div {
     display: flex;
     align-items: center;
     column-gap: 10px;
 }
-.LogoWrapper a svg {
-    color: #1C2237;
-}
 .LogoWrapper a span{
-    color: #1C2237;
+    /* color: #1C2237; */
     font-weight: 600;
 }
 
 .sectionReg {
   width: 100%;
-  max-width: 420px;
-  min-height: 400px;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 30px;
-  border: #ccc 1px solid;
+  padding: 10px;
+  border: #f5f5f5 1px solid;
   border-radius: 15px;
+  height: fit-content;
+  background-color: transparent;
+  color: white;
+}
+.sectionLogin {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    border: #f5f5f5 1px solid;
+    border-radius: 15px;
+    height: fit-content;
+    background-color: transparent;
+    color: white;
+  }
+.success{
+    display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  width: 100%;
+  padding: 20px;
+  align-content: center;
+
 }
 
-.sectionReg h1 {
-    font-size: 20px;
-    font-weight: 600;
-    text-align: center;
-}
+
 
 .inputReg{
-    padding: 8px;
+    padding: 5px;
     border-radius: 10px;
     border: 1px solid #c5c5c5;
     width: 100%;
-    
-
+    font-size: 20px;
 }
 .inputReg[type="text"],
 .inputReg[type="password"],
@@ -108,15 +148,18 @@
 
 .regLabel{
   margin: 0 0 5px 0;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 400;
   justify-content: flex-start;
   display: flex;
   width: 100%;
+ 
 }
 .name{
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 900;
+    padding: 10px;
+    color: white;
 
 }
 
@@ -127,6 +170,7 @@
   font-size: 14px;
   cursor: pointer;
   height: 40px;
+  width: 100%;
 }
 
 .instructions {
@@ -204,13 +248,26 @@
 
 .signButton{
     margin: 20px 0;
-  background: #1C2237;
+  background: #002534;
   color: #fff;
   font-size: 14px;
   cursor: pointer;
   height: 40px;
   padding: 5px;
 }
+
 .checkbox{
     padding: 10px;
+    font-size: 20px;
+}
+.twofa{
+    font-size: 20px;
+
+}
+.ButtonStyle{
+    color: WHITE;
+    border: none;
+    background-color: RED;
+    padding: 10px;
+
 }

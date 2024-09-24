@@ -66,6 +66,7 @@
   .tableHeaderCell {
     text-transform: capitalize;
     padding: 15px 15px 15px 10px ;
+    text-align: center;
   }
   
   .tableRowEven {
@@ -76,9 +77,16 @@
     background: #F9FBFC; 
   }
   
-  .tableCell {
-    padding: 20px 10px;
+ 
+  .tableInboxCell {
+    padding: 20px 5px;
+    text-align: center;
   }
+  .tableCell {
+    padding: 20px 13px;
+    text-align: center;
+  }
+  
   
   .noRecordRow {
     text-align: center;
@@ -151,6 +159,7 @@
   
   .dropdownItem {
     padding: 8px 16px;
+    text-align: center;
     cursor: pointer;
   }
   
@@ -162,7 +171,7 @@
     display: flex;
     justify-content: space-between;
     background-color: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     align-items: center;
     width: 100%;
   }

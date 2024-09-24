@@ -13,138 +13,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../api/store';
 import LoadingSpinner from '../component/chart/LoadingSpinner';
 import { MemoApi } from '../../api/memo/MemoApi';
-// const validationSchemas = [
-//   Yup.object().shape({
-//     subject: Yup.string().required('Subject is required'),
-//     recipient: Yup.string().required('Recipient is required'),
-//   }),
-//   // Add validation schemas for other steps if needed
-// ];
 
-// interface FormValues {
-//   subject: string;
-//   recipient: string;
-//   from: string;
-//   date: string;
-//   description: string;
-//   reviewerName: string;
-//   department:string;
-//   landmark:string
-// }
-
-// const MemoForm: React.FC = () => {
-//   const [step, setStep] = useState(0);
-//   const [completed, setCompleted] = useState(false);
-//   const [memoData, setMemoData] = useState<FormValues | null>(null);
-//   const navigate = useNavigate();
-//   const { memoId, documentNo } = useParams();
-//   const steps = ['Sender', 'Received'];
-//   const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
-//   const userId = useSelector((state: RootState) => state.auth.user?.id);
-  
-
-//   useEffect(() => {
-//     console.log("Current pathname:", window.location.pathname);
-//     console.log("memoId:", memoId);
-//     console.log("documentNo:", documentNo);
-
-//     if (memoId) {
-//       axios.get(`/api/v1/memo/${memoId}`, {
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`
-//         }
-//       })
-//         .then(response => {
-//           setMemoData(response.data);
-         
-//           const encodedMemoId = encodeURIComponent(memoId);
-//           const encodedDocumentNo = encodeURIComponent(documentNo || '');
-//           const reviewerPath = `/reviewer/api/v1/memorandums/approve/${encodedMemoId}/${encodedDocumentNo}`;
-
-//           if (window.location.pathname === reviewerPath) {
-//             setStep(1); // Set step to Reviewer
-//           } else {
-//             setStep(0); // Default to Requester
-//           }
-//         })
-//         .catch(error => console.error("Error fetching memo data:", error));
-//     }
-//   }, [memoId, documentNo, accessToken]);
-
-
-
-//   const handleNext = () => setStep((prevStep) => prevStep + 1);
-//   const handleBack = () => setStep((prevStep) => prevStep - 1);
-
-//   const isLastStep = () => step === steps.length - 1;
-
-//   const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
-//     if (isLastStep()) {
-//       console.log('Submitting final step:', values);
-//       setCompleted(true);
-//     } else {
-//       handleNext();
-//       setSubmitting(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (completed) {
-//       navigate('/inbox');
-//     }
-//   }, [completed, navigate]);
-
-//   return (
-//     <ThemeProvider theme={theme}>
-//       <div style={{ width: '100%' }}>
-//         <div className={styles.stepper}>
-//           <div style={{ padding: '12px', margin: '-20px', marginBottom: '25px', fontWeight: '900', backgroundColor: '#F9FBFC' }}>
-//             Status
-//           </div>
-//           <Stepper activeStep={step} alternativeLabel>
-//             {steps.map((label) => (
-//               <Step key={label}>
-//                 <StepLabel>{label}</StepLabel>
-//               </Step>
-//             ))}
-//           </Stepper>
-//         </div>
-
-//         {completed ? (
-//           <div>Memo Approved</div>
-//         ) : (
-//           <Formik<FormValues>
-//             initialValues={memoData || {
-//               subject: '',
-//               recipient: '',
-//               from: '',
-//               date: '',
-//               description: '',
-//               department:'',
-//               landmark:'',
-//               reviewerName: '',
-            
-//             }}
-//             validationSchema={validationSchemas[step]}
-//             onSubmit={handleSubmit}
-//             enableReinitialize
-//           >
-//             {({  setSubmitting }) => (
-//               <Form>
-//                 {step === 0 && <Requester handleNext={handleNext} setSubmitting={setSubmitting} memoId={memoId} />}
-//                 {step === 1 && <ReviewerFormPages memoId={memoId} documentNo={documentNo} />}
-               
-        
-//               </Form>
-//             )}
-//           </Formik>
-//         )}
-//       </div>
-//     </ThemeProvider>
-//   );
-// };
-
-// export default MemoForm;
 
 
 
@@ -166,6 +35,8 @@ interface FormValues {
   department: string;
   landmark: string;
 }
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
 const MemoForm: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -178,6 +49,7 @@ const MemoForm: React.FC = () => {
   const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
   const userId = useSelector((state: RootState) => state.auth.user?.id);
   const { createMemo } = MemoApi();
+  const [selectedReviewer, setSelectedReviewer] = useState<string>('');
 
   useEffect(() => {
     if (memoId) {
@@ -191,13 +63,6 @@ const MemoForm: React.FC = () => {
       const encodedMemoId = encodeURIComponent(memoId || '');  // Make sure it's declared before use
       const encodedDocumentNo = encodeURIComponent(documentNo || '');
 
-      const response = await axios.get(`/api/v1/memo/19`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      setMemoData(response.data);
-               
       const reviewerPath = `/reviewer/api/v1/memorandums/approve/${encodedMemoId}/${encodedDocumentNo}`;
       if (window.location.pathname === reviewerPath) {
         setStep(1);  // Set step to Reviewer
@@ -226,25 +91,74 @@ const MemoForm: React.FC = () => {
     setSubmitting(false);
   };
 
+
   useEffect(() => {
     if (completed) {
       navigate('/inbox');
     }
   }, [completed, navigate]);
 
-  const handleFormSubmit = async (formData: FormValues) => {
+  // const handleFormSubmit = async (formData: FormValues) => {
+
+  //   setIsLoading(true);
+  //   try {
+      
+  //     const memoData = {
+  //       ...formData,
+  //     };
+  
+  //     console.log('Submitting form data:', memoData);
+  
+  //     // Call API to create the memo
+  //     const response = await createMemo(memoData);
+  //     console.log('Memo created successfully:', response);
+  
+
+  //     setMemoData(memoData);
+  //     await delay(5000);
+  
+  //     if (!response.data || !response.data.id) {
+  //       throw new Error('Memo ID is not available');
+  //     }
+  
+  //   } catch (error) {
+  //     console.error('Error creating memo:', error);
+  //   } finally {
+  //     setIsLoading(false); // Ensure loading spinner is stopped
+  //   }
+  // };
+  const handleFormSubmit = async (formData: FormValues): Promise<{ memoId: string } | undefined> => {
     setIsLoading(true);
     try {
-      // Use the createMemo function to submit the form data
-      await createMemo(formData);
-      // After successful creation, refetch the memo data and reload the form
-      await fetchMemoData();
+      const memoData = {
+        ...formData,
+      };
+  
+      console.log('Submitting form data:', memoData);
+  
+      // Call API to create the memo
+      const response = await createMemo(memoData);
+      console.log('Memo created successfully:', response);
+
+          await delay(2000);
+  
+      // Ensure that response contains memoId and return it
+      if (response.memo && response.memo.id) {
+        setMemoData(memoData);
+        return { memoId: response.memo.id }; // Return memoId
+      } else {
+        console.error('No memoId in response');
+        return undefined; // Return undefined if no memoId
+      }
     } catch (error) {
       console.error('Error creating memo:', error);
+      return undefined; // Return undefined in case of error
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Ensure loading spinner is stopped
     }
   };
+  
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -262,7 +176,7 @@ const MemoForm: React.FC = () => {
           </Stepper>
         </div>
 
-        {completed ? (
+        {/* {completed ? (
           <div>Memo Approved</div>
         ) : (
           <Formik<FormValues>
@@ -279,7 +193,28 @@ const MemoForm: React.FC = () => {
             validationSchema={validationSchemas[step]}
             onSubmit={handleSubmit}
             enableReinitialize
-          >
+          > */}
+            {/* Show loading spinner if isLoading is true */}
+      {isLoading ? (
+        <LoadingSpinner size={50} message="Processing..." />
+      ) : completed ? (
+        <div>Memo Approved</div>
+      ) : (
+        <Formik<FormValues>
+          initialValues={memoData || {
+            subject: '',
+            recipient: '',
+            from: '',
+            date: '',
+            description: '',
+            department: '',
+            landmark: '',
+            reviewerName: '',
+          }}
+          validationSchema={validationSchemas[step]}
+          onSubmit={handleSubmit}
+          enableReinitialize
+        >
             {({ setSubmitting }) => (
               <Form>
                 {step === 0 && <Requester handleFormSubmit={handleFormSubmit} setSubmitting={setSubmitting} memoId={memoId} />}
@@ -288,8 +223,6 @@ const MemoForm: React.FC = () => {
             )}
           </Formik>
         )}
-
-        {isLoading && <LoadingSpinner size={30} message="Processing..." />}
       </div>
     </ThemeProvider>
   );

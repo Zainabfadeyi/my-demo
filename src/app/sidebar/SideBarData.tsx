@@ -56,17 +56,22 @@ export const SidebarData: SidebarItem[] = [
         cName: 'sub-nav'
       },
       {
+        title: 'My active task',
+        path: '/my-active-task',
+        cName: 'sub-nav'
+      },
+      {
         title: 'All Request',
         path: '/all-request',
         cName: 'sub-nav'
       },
     ]
   },
-  {
-    title: 'Account',
-    path: '/Account',
-    icon: <FaIcons.FaEnvelopeOpenText />,
-  },
+  // {
+  //   title: 'Account',
+  //   path: '/Account',
+  //   icon: <FaIcons.FaEnvelopeOpenText />,
+  // },
   
   {
     title: 'Settings',
@@ -83,10 +88,10 @@ export const SidebarData: SidebarItem[] = [
         title: 'Locations',
         path: '/locations',
       },  
-      {
-        title: 'Participants',
-        path: '/participants',
-      }, 
+      // {
+      //   title: 'Participants',
+      //   path: '/participants',
+      // }, 
     ]
   },
   

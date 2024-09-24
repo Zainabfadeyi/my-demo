@@ -41,7 +41,8 @@ import DeleteMemo from "../component/functions/DeleteMemo";
   const [memoToDelete, setMemoToDelete] = useState<Document | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
     const navigate = useNavigate();
-  
+    const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
+    const userId = useSelector((state: RootState) => state.auth.user?.id);
     const columns = [
       columnHelper.accessor("documentNo", {
         header: "Document No",
@@ -135,6 +136,24 @@ import DeleteMemo from "../component/functions/DeleteMemo";
 
          
     };
+    
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/v1/memo/user/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}` 
+            }
+      });
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching memos:", error);
+      }
+    };
+
+    useEffect(() => {
+      fetchData();
+  }, [userId, accessToken]);
     const handleDeleteConfirm = async (memoId: string) => {
       try {
         const response = await axios.delete(`/api/v1/memo/${memoId}`, 
@@ -146,6 +165,7 @@ import DeleteMemo from "../component/functions/DeleteMemo";
         if (response.data) {
           
           console.log('Memo deleted successfully.');
+          fetchData()
         } else {
           console.error('Failed to delete memo.');
         }
@@ -156,8 +176,7 @@ import DeleteMemo from "../component/functions/DeleteMemo";
         setMemoToDelete(null);
       }
     };
-    const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
-  const userId = useSelector((state: RootState) => state.auth.user?.id);
+
     const [data, setData] = useState<Document[]>([]);
     const [globalFilter, setGlobalFilter] = useState("");
   
@@ -174,24 +193,9 @@ import DeleteMemo from "../component/functions/DeleteMemo";
       getSortedRowModel:getSortedRowModel(),
       onSortingChange:setSorting
     });
-    
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(`/api/v1/memo/user/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}` 
-              }
-        });
-          setData(response.data);
-        } catch (error) {
-          console.error("Error fetching memos:", error);
-        }
-      };
   
-      fetchData();
-    }, []);
+
+
 
     const formatDateTimeForInput = (isoDateTime: string): string => {
       const date = new Date(isoDateTime);

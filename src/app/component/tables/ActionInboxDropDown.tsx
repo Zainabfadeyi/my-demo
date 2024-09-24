@@ -4,10 +4,9 @@ import styles from '../../../styles/table.module.css';
 
 interface ActionsDropdownProps {
   onReject: () => void;
-  onDelete: () => void;
 }
 
-const ActionInboxDropdown: FC<ActionsDropdownProps> = ({ onReject, onDelete }) => {
+const ActionInboxDropdown: FC<ActionsDropdownProps> = ({ onReject}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +38,7 @@ const ActionInboxDropdown: FC<ActionsDropdownProps> = ({ onReject, onDelete }) =
       {dropdownOpen && (
         <div className={styles.dropdownMenu}>
           <div className={styles.dropdownItem} onClick={onReject}>Reject</div>
-          <div className={styles.dropdownItem} onClick={onDelete}>Delete</div>
+        
         </div>
       )}
     </div>

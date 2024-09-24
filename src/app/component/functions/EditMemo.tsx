@@ -4,9 +4,14 @@ import { Field } from 'formik';
 import axios from '../../../api/axios';
 import { RootState } from '../../../api/store';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AiOutlineForm } from 'react-icons/ai';
+import LoadingSpinner from '../chart/LoadingSpinner';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const EditMemo:React.FC = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
     const [formData, setFormData] = useState({
         subject: '',
         recipient: '',
@@ -30,6 +35,7 @@ const EditMemo:React.FC = () => {
       };
       const [categories, setCategories] = useState<{ id: string; categoryName: string }[]>([]);
       const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
+      const navigate=useNavigate()
       useEffect(() => {
         const fetchCategories = async () => {
           try {
@@ -66,6 +72,7 @@ const EditMemo:React.FC = () => {
      
        // Handle memo update
   const handleUpdateMemo = async () => {
+    setIsLoading(true);
     try {
       await axios.put(`/api/v1/memo/editByDocumentNo/${documentNo}`, formData, {
         headers: {
@@ -73,14 +80,21 @@ const EditMemo:React.FC = () => {
         },
       });
       alert('Memo updated successfully');
+      await delay(2000);
     } catch (error) {
       console.error('Error updating memo:', error);
       alert('Error updating memo');
+    }finally {
+
+      setIsLoading(false);
     }
   };
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  const handleCancel=()=>{
+    navigate('/all-request')
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -99,10 +113,20 @@ const EditMemo:React.FC = () => {
 
     fetchUsers();
   }, []);
+  if (isLoading) {
+    return <LoadingSpinner size={50} message="Editing your memo..." />;
+  }
     return (
         <form className={styles.formGroup}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ color: '#1976D2', width: '15%', fontSize:"18px" }}>{documentNo}</div>
+          <div style={{ color: "#1976D2", width: "15%" , fontSize:"20px", columnGap:"10px", alignItems:"center", display:"flex"}}>
+            <div style={{fontWeight:"900", fontSize:"23px"}}>
+            <AiOutlineForm />
+            </div>
+            <div>
+          {documentNo}
+          </div>
+          </div>
             <div className={styles.hr}></div>
           </div>
     
@@ -202,6 +226,7 @@ const EditMemo:React.FC = () => {
             </div>
           </div>
           
+          
 
           <div style={{ width: "100%" }}>
       <div className={styles.dropdownContainer}>
@@ -235,7 +260,7 @@ const EditMemo:React.FC = () => {
       )}
     </div>
     <div style={{ textAlign: 'right', marginTop: '20px' , justifyContent:"flex-end", display:"flex", alignItems:"center"}}>
-      <button className={styles.RequesterBtn}>Cancel </button>
+      <button onClick={handleCancel} className={styles.RequesterBtn}>Cancel </button>
       
       <button onClick={handleUpdateMemo} className={styles.RequesterBtn}>Update </button>
       </div>

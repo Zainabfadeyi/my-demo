@@ -129,9 +129,10 @@ import DeleteMemo from "../component/functions/DeleteMemo";
       }),
     ];
   
-    const handleView = (document:Document) => {
-        console.log('View transaction:', document);
-      };
+    const handleView = (document: Document) => {
+      console.log('View transaction:', document);
+      navigate(`/edit-memo/${document.documentNo}`); // Assuming the documentNo is the unique identifier
+    };;
       
       const handleDelete = (document: Document) => {
         setMemoToDelete(document);
@@ -162,7 +163,7 @@ import DeleteMemo from "../component/functions/DeleteMemo";
       getSortedRowModel:getSortedRowModel(),
       onSortingChange:setSorting
     });
-    useEffect(() => {
+    
       const fetchData = async () => {
         
         try {
@@ -179,9 +180,10 @@ import DeleteMemo from "../component/functions/DeleteMemo";
           console.error("Error fetching memos:", error);
         }
       };
-  
-      fetchData();
-    }, []);
+      useEffect(() => {
+        fetchData();
+    }, [userId, accessToken]);
+
 
     const formatDateTimeForInput = (isoDateTime: string): string => {
       const date = new Date(isoDateTime);
@@ -214,6 +216,7 @@ import DeleteMemo from "../component/functions/DeleteMemo";
         if (response.data) {
           // Handle successful deletion (e.g., refresh the data)
           console.log('Memo deleted successfully.');
+          fetchData()
         } else {
           console.error('Failed to delete memo.');
         }
@@ -246,10 +249,6 @@ import DeleteMemo from "../component/functions/DeleteMemo";
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className={styles.tableHeaderCell}>
-                    {/* {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )} */}
                     <div
                     className={`${
                       header.column.getCanSort() ? styles.sort : ""

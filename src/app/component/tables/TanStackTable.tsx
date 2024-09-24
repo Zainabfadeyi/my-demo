@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import ActionInboxDropdown from "./ActionInboxDropDown";
 import RejectMemo from "../functions/RejectMemo";
 import { RiArrowUpDownLine } from "react-icons/ri";
+import { TiArrowUp } from "react-icons/ti";
+import { GoArrowDown } from "react-icons/go";
   
   // Define the Document type
   interface Document {
@@ -123,7 +125,6 @@ import { RiArrowUpDownLine } from "react-icons/ri";
         cell: (info) => (
           <ActionInboxDropdown
           onReject={() => handleReject(info.row.original)}
-            onDelete={() => handleDelete(info.row.original)}
           />
         ),
       }),
@@ -140,26 +141,24 @@ import { RiArrowUpDownLine } from "react-icons/ri";
     const [data, setData] = useState<Document[]>([]);
     const [globalFilter, setGlobalFilter] = useState("");
 
-    useEffect(() => {
-      const fetchData = async () => {
-        
-        try {
-          const response = await axios.get(`/api/v1/inbox/allMemos/${userId}`,
-            {
+    const fetchData = async () => {
+      try {
+          const response = await axios.get(`/api/v1/inbox/allMemos/${userId}`, {
               headers: {
-                Authorization: `Bearer ${accessToken}` 
+                  Authorization: `Bearer ${accessToken}`
               }
-        });
+          });
           setData(response.data);
-          // window.location.reload
-
-        } catch (error) {
+      } catch (error) {
           console.error("Error fetching memos:", error);
-        }
-      };
-  
+      }
+  };
+
+  // useEffect to fetch data on component mount and when userId or accessToken changes
+  useEffect(() => {
       fetchData();
-    }, [userId, accessToken]);
+  }, [userId, accessToken]);
+    
     const handleconfirmReject = async (documentNo: string) => {
 
       try {
@@ -173,6 +172,7 @@ import { RiArrowUpDownLine } from "react-icons/ri";
         if (response.data) {
           
           console.log('Memo deleted successfully.');
+          fetchData();
         } else {
           console.error('Failed to delete memo.');
         }
@@ -261,7 +261,8 @@ import { RiArrowUpDownLine } from "react-icons/ri";
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     <span>
-                      {header.column.getIsSorted() ? (header.column.getIsSorted() === 'asc' ? ' 🔼' : ' 🔽') : <RiArrowUpDownLine />}
+                      {header.column.getIsSorted() ? (header.column.getIsSorted() === 'asc' ?  <TiArrowUp /> : <GoArrowDown />
+                    ) : <RiArrowUpDownLine />}
                     </span>
                     </div>
                   </th>
@@ -279,7 +280,7 @@ import { RiArrowUpDownLine } from "react-icons/ri";
                   }
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} >
+                    <td key={cell.id} className={styles.tableInboxCell}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -358,4 +359,6 @@ import { RiArrowUpDownLine } from "react-icons/ri";
   
   export default TanStackTable;
   
+
+
   
