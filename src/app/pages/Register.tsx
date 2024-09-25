@@ -691,7 +691,7 @@ return (
     
             <div>
                 <div className={styles.twofa}>
-                <label>
+                <label style={{fontSize:"15px"}}>
                         <input 
                             type="checkbox" 
                         

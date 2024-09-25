@@ -135,11 +135,10 @@
 
 
 .inputReg{
-    padding: 5px;
     border-radius: 10px;
     border: 1px solid #c5c5c5;
     width: 100%;
-    font-size: 20px;
+    font-size: 15px;
 }
 .inputReg[type="text"],
 .inputReg[type="password"],
@@ -156,9 +155,9 @@
  
 }
 .name{
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 900;
-    padding: 10px;
+    padding: 5px;
     color: white;
 
 }
