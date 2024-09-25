@@ -52,6 +52,8 @@ import * as AiIcons from 'react-icons/ai';
 import { SidebarData } from '../../app/sidebar/SideBarData';
 import SubMenu from './SubMenu';
 import styles from '../../styles/sidebar.module.css';
+import { RootState } from '../../api/store';
+import { useSelector } from 'react-redux';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -60,6 +62,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   const [activeLink, setActiveLink] = useState<string | null>(null);
+  const userRole = useSelector((state: RootState) => state.auth.user?.role || '');
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -83,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
             <AiIcons.AiOutlineClose onClick={toggleSidebar} style={{ color: "#000" }} />
           </div>
         
-          {SidebarData.map((item, index) => (
+          {SidebarData.filter(item => item.roles?.includes(userRole)).map((item, index) => (
             <SubMenu
               key={index}
               item={item}

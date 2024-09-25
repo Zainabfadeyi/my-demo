@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styles from '../../styles/sidebar.module.css';
+import { RootState } from '../../api/store';
+import { useSelector } from 'react-redux';
 const SidebarLink = styled(Link)<{ isActive: boolean }>`
   display: flex;
   color: ${props => (props.isActive ? '#f5f5f5' : '#000')};
@@ -47,6 +49,7 @@ interface SubNavItem {
   title: string;
   path: string;
   icon?: JSX.Element;
+  roles?: string[];
 }
 
 interface SidebarItem {
@@ -56,6 +59,7 @@ interface SidebarItem {
   iconClosed?: JSX.Element;
   iconOpened?: JSX.Element;
   subNav?: SubNavItem[];
+  roles?: string[];
 }
 
 interface SubMenuProps {
@@ -66,7 +70,7 @@ interface SubMenuProps {
 
 const SubMenu: React.FC<SubMenuProps> = ({ item, activeLink, setActiveLink }) => {
   const [subnav, setSubnav] = useState(false);
-
+  const userRole = useSelector((state: RootState) => state.auth.user?.role || '');
   const showSubnav = () => setSubnav(!subnav);
 
   return (
@@ -98,7 +102,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ item, activeLink, setActiveLink }) =>
         </SidebarLink>
       )}
       
-      {subnav && item.subNav?.map((subItem, index) => (
+      {subnav && item.subNav?.filter(subItem => subItem.roles?.includes(userRole)).map((subItem, index) => (
         <DropdownLink
           to={subItem.path}
           key={index}

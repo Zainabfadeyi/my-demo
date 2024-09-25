@@ -97,7 +97,6 @@
 
 .sectionReg {
   width: 100%;
-  max-width: 520px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -110,7 +109,6 @@
 }
 .sectionLogin {
     width: 100%;
-    max-width: 520px;
     display: flex;
     flex-direction: column;
     justify-content: center;
