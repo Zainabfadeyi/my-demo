@@ -4,8 +4,6 @@ import Sidebar from "../sidebar/SideBar";
 import Navbar from "../sidebar/NavBar"; 
 import styles from '../../styles/layout.module.css';
 import { Layout } from 'antd';
-import Sider from "antd/es/layout/Sider";
-import { Content, Header } from "antd/es/layout/layout";
 
 const LayoutComponent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);

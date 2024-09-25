@@ -4,9 +4,6 @@ import { redirect, useNavigate } from "react-router-dom";
 import axios from '../../api/axios';
 import styles from "../../styles/verifyemail.module.css";
 
-import { useSelector } from "react-redux";
-import { configConsumerProps } from "antd/es/config-provider";
-
 const VerifyEmailForm: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState<string | null>(null);
