@@ -15,12 +15,9 @@ interface RequesterProps{
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const ReviewerFormPages: React.FC<RequesterProps> = ({ memoId, documentNo }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [documentUrl, setDocumentUrl] = useState<string | null>(null);
-    // const { documentNo } = useParams();  // Retrieves the documentNo from the route
-  const location = useLocation();
+
   const navigate = useNavigate();
   const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
-  const userId = useSelector((state: RootState) => state.auth.user?.id);
   const { recieveMemo } = MemoApi();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
@@ -48,9 +45,9 @@ const ReviewerFormPages: React.FC<RequesterProps> = ({ memoId, documentNo }) => 
   }, [memoId]);
 
 
-    const handleTemplateSelection = (url: string | null) => {
-      setDocumentUrl(url); // Update the state with the selected document URL
-    };
+    // const handleTemplateSelection = (url: string | null) => {
+    //   setDocumentUrl(url); // Update the state with the selected document URL
+    // };
 
 
 
@@ -58,7 +55,6 @@ const ReviewerFormPages: React.FC<RequesterProps> = ({ memoId, documentNo }) => 
     setIsOpen(!isOpen);
   };
 
-  const [selectedUser, setSelectedUser] = useState('');
   const formatDateTimeForInput = (isoDateTime: string): string => {
     const date = new Date(isoDateTime);
   

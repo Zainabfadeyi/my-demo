@@ -59,6 +59,7 @@ const Location: React.FC<LocationProps> = ({ onSelect }) => {
               className={styles.userInput}
               onChange={handleChange}
               value={selectedUser}
+              required
             >
               <option value="">Select Location</option>
               {users.map((user, index) => (

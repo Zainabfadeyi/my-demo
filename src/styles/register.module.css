@@ -110,7 +110,7 @@
 }
 .sectionLogin {
     width: 100%;
-    max-width: 48%;
+    max-width: 40%;
     height: max-content;
     display: flex;
     flex-direction: column;
@@ -139,6 +139,7 @@
     border: 1px solid #c5c5c5;
     width: 100%;
     font-size: 15px;
+    padding: 2px 5px 2px 5px;
 }
 
 

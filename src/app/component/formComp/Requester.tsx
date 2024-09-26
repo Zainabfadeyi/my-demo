@@ -31,7 +31,6 @@ interface FormValues {
 
 const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, memoId }) => {
   const [categories, setCategories] = useState<{ id: string; categoryName: string }[]>([]);
-  const [selectedReviewer, setSelectedReviewer] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     subject: '',
@@ -56,24 +55,23 @@ const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, 
       [name]: value,
     });
   };
-
-  // const handleFormSubmitClick = async (e:React.FormEvent) => {
-  //   e.preventDefault();
-  //   setSubmitting(true);
-    
-  //   try {
-  //     const response = await handleFormSubmit(formData);
-      
-  //   console.log(response)
-    
-      
-  //   } finally {
-  //     setSubmitting(false);
-  //     setIsLoading(false);
-  //   }
+  // const isFormValid = () => {
+  //   const { subject, recipient, category, sender, date, description} = formData;
+  //   return (
+  //     subject.trim() !== '' &&
+  //     recipient.trim() !== '' &&
+  //     category.trim() !== '' &&
+  //     sender.trim() !== '' &&
+  //     date.trim() !== '' &&
+  //     description.trim() !== ''
+  //   );
   // };
   const handleFormSubmitClick = async (e: React.FormEvent) => {
     e.preventDefault();
+    // if (!isFormValid()) {
+    //   console.error('Form is not valid');
+    //   return; // Return early if form is invalid
+    // }
     setSubmitting(true);
     setIsLoading(true);
   
@@ -114,6 +112,8 @@ const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, 
   if (isLoading) {
     return <LoadingSpinner size={50} message="Submitting your memo..." />;
   }
+
+  
 
   return (
     <form className={styles.formGroup}>
@@ -227,8 +227,10 @@ const Requester: React.FC<RequesterProps> = ({ handleFormSubmit, setSubmitting, 
       <div style={{ textAlign: 'right', marginTop: '20px' }}>
         <button
         type='submit'
+       
           onClick={handleFormSubmitClick}
           className={styles.RequesterBtn}
+          
         
         >
           Dispatch

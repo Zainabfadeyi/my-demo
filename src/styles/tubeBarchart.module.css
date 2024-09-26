@@ -15,12 +15,11 @@
     color: #fff;
     text-align: center;
     transition: height 0.4s ease;
-    /* writing-mode: vertical-rl; */
     text-orientation: mixed;
   }
   
   
-  .progressBar.employees-documents {
+  .progressBar.employees-document {
     background-color:#2379EA ;
   }
   
@@ -43,9 +42,7 @@
   .progressBar.staff-benefits {
     background-color: #2379EA;
   }
-  .progressBar.departmental-benefits {
-    background-color: #2379EA;
-  }
+  
 
 
   .progress-bar {

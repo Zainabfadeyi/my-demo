@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Field } from 'formik';
 import styles from '../../../styles/memoform.module.css';
-import ReviewerDropdown from './ReviewerDropdown';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../api/store';
 import axios from '../../../api/axios';
-import Location from './Location';
 import LoadingSpinner from '../chart/LoadingSpinner';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AiOutlineForm } from 'react-icons/ai';
 
 
@@ -32,7 +29,6 @@ const PreviewMemo: React.FC = () => {
     reviewerName: '',
     documentNo:''
   });
-  const navigate =useNavigate()
 
   const accessToken = useSelector((state: RootState) => state.auth.user?.accessToken);
   const toggleDropdown = () => {

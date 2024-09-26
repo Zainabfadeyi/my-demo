@@ -1,63 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from "../../../api/axios"; // Import Axios
-// import styles from '../../../styles/memoform.module.css';
-
-// const ReviewerDropdown: React.FC = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [users, setUsers] = useState<string[]>([]); // State to hold usernames
-//   const [selectedUser, setSelectedUser] = useState('');
-
-//   const toggleDropdown = () => {
-//     setIsOpen(!isOpen);
-//   };
-
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       try {
-//         const response = await axios.get('/api/v1/user/all'); 
-//         setUsers(response.data); 
-//       } catch (error) {
-//         console.error('Error fetching users:', error);
-//       }
-//     };
-
-//     fetchUsers();
-//   }, []);
-
-//   return (
-//     <div style={{ width: "100%" }}>
-//       <div className={styles.dropdownContainer}>
-//         <div className={styles.dropdownLabel} onClick={toggleDropdown}>
-//           Reviewer <span className={styles.dropdownIcon}>{isOpen ? '▲' : '▼'}</span>
-//         </div>
-//       </div>
-//       {isOpen && (
-//         <div className={styles.dropdownContent}>
-//           <div className={styles.dropdownField}>
-//             <div className={styles.warningMessage}>
-//               Overwrite assignee, if not setup then use default user.
-//             </div>
-//             <label htmlFor="user" className={styles.userLabel}>User</label>
-//             <select
-//               id="user"
-//               name="user"
-//               className={styles.userInput}
-//               onChange={(e) => setSelectedUser(e.target.value)}
-//               value={selectedUser}
-//             >
-//               <option value="">Select User</option>
-//               {users.map((user, index) => (
-//                 <option key={index} value={user}>{user}</option>
-//               ))}
-//             </select>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ReviewerDropdown;
 import React, { useEffect, useState } from 'react';
 import axios from "../../../api/axios"; // Import Axios
 import styles from '../../../styles/memoform.module.css';
@@ -111,6 +51,7 @@ const ReviewerDropdown: React.FC<ReviewerDropdownProps> = ({ onUserSelect }) => 
               className={styles.userInput}
               onChange={handleChange}
               value={selectedUser}
+              required
             >
               <option value="">Select User</option>
               {users.map((user, index) => (
