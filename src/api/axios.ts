@@ -1,6 +1,7 @@
 import axios from "axios";
 const instance = axios.create({
-    baseURL:"http://localhost:8080"
+    // baseURL:"http://localhost:8080"
+    baseURL:"https://my-demo-hlo6.onrender.com"
 })
 
 instance.interceptors.request.use(
