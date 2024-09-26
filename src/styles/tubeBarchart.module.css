@@ -19,11 +19,11 @@
   }
   
   
-  .progressBar.employees-document {
+  .progressBar.employees-documents{
     background-color:#2379EA ;
   }
   
-  .progressBar.departmental-benefit{
+  .progressBar.departmental-benefits{
     background-color:#2379EA ;
   }
   
@@ -36,7 +36,7 @@
     
   }
   
-  .progressBar.students-benefits {
+  .progressBar.students-benefits{
     background-color: #2379EA;
   }
   .progressBar.staff-benefits {
