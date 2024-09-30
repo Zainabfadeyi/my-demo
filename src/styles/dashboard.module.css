@@ -2,6 +2,8 @@
     width: 100%;
     align-items: center;
     padding: 20px;
+    /* min-width: calc(80vw); */
+
     
 }
 .chartContainer{

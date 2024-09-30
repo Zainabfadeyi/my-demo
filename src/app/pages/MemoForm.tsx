@@ -139,8 +139,6 @@ const MemoForm: React.FC = () => {
       // Call API to create the memo
       const response = await createMemo(memoData);
       console.log('Memo created successfully:', response);
-
-          await delay(2000);
   
       // Ensure that response contains memoId and return it
       if (response.memo && response.memo.id) {
